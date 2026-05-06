@@ -9,6 +9,8 @@ import {
   Bell,
   LogOut,
   Plus,
+  GraduationCap,
+  Download,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 
@@ -26,7 +28,7 @@ const NavItem = ({ icon: Icon, label, active, onClick }: NavItemProps) => (
       "flex items-center gap-3 px-6 py-4 rounded-2xl transition-all duration-300 w-full group",
       active
         ? "bg-emerald-600 text-white shadow-xl shadow-emerald-200/50"
-        : "text-slate-500 hover:bg-slate-100 hover:text-emerald-600",
+        : "text-slate-500 dark:text-[#a3a3a3] hover:bg-slate-100 dark:bg-[#1a1a1a] hover:text-emerald-600",
     )}
   >
     <Icon
@@ -44,6 +46,7 @@ interface LayoutProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onLogout: () => void;
+  onPrintMenuClick?: () => void;
 }
 
 export const Layout = ({
@@ -51,28 +54,65 @@ export const Layout = ({
   activeTab,
   setActiveTab,
   onLogout,
+  onPrintMenuClick,
 }: LayoutProps) => {
   return (
     <div
-      className="flex flex-col md:flex-row min-h-screen bg-white font-sans text-slate-900 overflow-hidden"
+      className="flex flex-col md:flex-row min-h-screen bg-white dark:bg-[#050505] font-sans text-slate-900 dark:text-white overflow-hidden"
       dir="rtl"
     >
       {/* Background Decor */}
       <div className="fixed inset-0 dots-bg opacity-[0.2] pointer-events-none" />
       <div className="fixed inset-0 mesh-bg opacity-[0.4] pointer-events-none" />
+      <div className="fixed inset-0 paper-pattern opacity-[0.3] pointer-events-none" />
+      
+      {/* Floating Educational Icons */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden lg:block opacity-[0.05]">
+        <motion.div 
+          animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-20 right-20 text-emerald-900"
+        >
+          <GraduationCap size={180} />
+        </motion.div>
+        
+        <motion.div 
+          animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-20 left-20 text-emerald-900"
+        >
+          <Plus size={160} />
+        </motion.div>
+        
+        <motion.div 
+          animate={{ x: [0, 15, 0], rotate: [0, 10, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[40%] left-[10%] text-slate-900 dark:text-white"
+        >
+          <FileSpreadsheet size={120} />
+        </motion.div>
+        
+        <motion.div 
+          animate={{ x: [0, -15, 0], rotate: [0, -10, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[40%] right-[10%] text-slate-900 dark:text-white"
+        >
+          <Settings size={130} />
+        </motion.div>
+      </div>
 
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-72 bg-white/80 backdrop-blur-2xl border-l border-slate-100 p-8 sticky top-0 h-screen z-20 shadow-[10px_0_40px_-20px_rgba(0,0,0,0.01)]">
+      <aside className="hidden md:flex flex-col w-72 bg-white/80 backdrop-blur-2xl border-l border-slate-100 dark:border-[#262626] p-8 sticky top-0 h-screen z-20 shadow-[10px_0_40px_-20px_rgba(0,0,0,0.01)]">
         <div className="flex items-center gap-4 mb-14 px-2">
           <div className="w-14 h-14 bg-gradient-to-br from-emerald-600 via-emerald-500 to-green-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-200/40 group transition-all duration-500 hover:rotate-3">
             <LayoutDashboard className="text-white w-8 h-8 group-hover:scale-110 transition-transform" />
           </div>
           <div>
-            <h1 className="text-2xl font-black tracking-tighter text-slate-800 leading-none font-display">
-              EduGrade
+            <h1 className="text-2xl font-black tracking-tighter text-slate-800 dark:text-white leading-none font-display">
+              برنامج الأستاذ
             </h1>
             <p className="text-[10px] font-black text-slate-400 mt-1.5 uppercase tracking-widest leading-none">
-              الأستاذ بلحية ياسين
+              تحليل النتائج
             </p>
           </div>
         </div>
@@ -102,6 +142,12 @@ export const Layout = ({
             active={activeTab === "settings"}
             onClick={() => setActiveTab("settings")}
           />
+          <NavItem
+            icon={Download}
+            label="تحميل التقارير"
+            active={false}
+            onClick={() => onPrintMenuClick?.()}
+          />
         </nav>
 
         <div className="mt-auto space-y-4">
@@ -115,11 +161,11 @@ export const Layout = ({
 
           <div className="p-6 bg-slate-900 rounded-[2.5rem] border border-white/5 relative overflow-hidden group shadow-2xl">
             <div className="relative z-10">
-              <p className="text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest leading-none">
+              <p className="text-[10px] font-black text-slate-500 dark:text-[#a3a3a3] mb-1.5 uppercase tracking-widest leading-none">
                 المسؤول
               </p>
               <p className="text-sm font-black text-white leading-none">
-                بلحية ياسين
+                أستاذ المادة
               </p>
             </div>
             <div className="absolute top-0 right-0 p-4 opacity-10 bg-gradient-to-br from-white/20 to-transparent rounded-full -m-4 w-24 h-24" />
@@ -136,7 +182,7 @@ export const Layout = ({
             <input
               type="text"
               placeholder="بحث عن تلميذ..."
-              className="w-80 bg-white border border-slate-100 rounded-2xl py-3 pr-12 pl-6 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 focus:bg-white transition-all font-bold placeholder:text-slate-400 shadow-sm"
+              className="w-80 bg-white dark:bg-[#050505] border border-slate-100 dark:border-[#262626] rounded-2xl py-3 pr-12 pl-6 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 focus:bg-white dark:bg-[#050505] transition-all font-bold placeholder:text-slate-400 shadow-sm"
             />
             <svg
               className="w-5 h-5 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 group-focus-within:text-emerald-500 transition-colors"
@@ -154,11 +200,11 @@ export const Layout = ({
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all relative group shadow-sm">
+            <button className="p-3 bg-white dark:bg-[#050505] border border-slate-100 dark:border-[#262626] rounded-2xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all relative group shadow-sm">
               <Bell className="w-6 h-6 group-hover:rotate-12 transition-transform" />
               <span className="absolute top-3 left-3 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
             </button>
-            <div className="h-10 w-px bg-slate-100 mx-2"></div>
+            <div className="h-10 w-px bg-slate-100 dark:bg-[#1a1a1a] mx-2"></div>
             <div className="flex items-center gap-3 pl-2">
               <button
                 onClick={onLogout}
@@ -168,8 +214,8 @@ export const Layout = ({
                 <span className="text-xs font-black">خروج</span>
               </button>
               <div className="text-left">
-                <p className="text-sm font-black text-slate-800">
-                  أ. بلحية ياسين
+                <p className="text-sm font-black text-slate-800 dark:text-white">
+                  لوحة التحكم
                 </p>
                 <div className="flex items-center justify-end gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -179,7 +225,7 @@ export const Layout = ({
                 </div>
               </div>
               <div className="w-12 h-12 rounded-2xl border-2 border-white shadow-xl shadow-slate-200 bg-gradient-to-br from-emerald-50 to-emerald-100 p-0.5">
-                <div className="w-full h-full bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                <div className="w-full h-full bg-white dark:bg-[#050505] rounded-xl flex items-center justify-center overflow-hidden">
                   <User className="text-emerald-200 w-8 h-8" />
                 </div>
               </div>
@@ -201,7 +247,7 @@ export const Layout = ({
       </main>
 
       {/* Mobile Nav */}
-      <nav className="md:hidden fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-xl border border-slate-100 px-6 py-4 flex justify-between items-center z-50 rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
+      <nav className="md:hidden fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-xl border border-slate-100 dark:border-[#262626] px-6 py-4 flex justify-between items-center z-50 rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
         <button
           onClick={() => setActiveTab("dashboard")}
           className={cn(
@@ -230,6 +276,12 @@ export const Layout = ({
           )}
         >
           <Plus className="w-6 h-6" />
+        </button>
+        <button
+          onClick={() => onPrintMenuClick?.()}
+          className="p-2 transition-transform active:scale-90 text-slate-300 hover:text-emerald-600"
+        >
+          <Download className="w-6 h-6" />
         </button>
         <button
           onClick={() => setActiveTab("settings")}

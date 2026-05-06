@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isVerified() { 
+      return isSignedIn() && request.auth.token.email_verified == true; 
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+
+    function isStaff(instId) {
+      // Identity check against parent document
+      let inst = get(/databases/$(database)/documents/institutions/$(instId)).data;
+      return isSignedIn() && (inst.adminId == request.auth.uid || request.auth.uid in inst.collaborators);
+    }
+
+    function isAdmin(instId) {
+      let inst = get(/databases/$(database)/documents/institutions/$(instId)).data;
+      return isSignedIn() && inst.adminId == request.auth.uid;
+    }
+
+    // Entity Validations
+    function isValidTeacher(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.specialty is string && data.specialty.size() > 0
+        && (data.get('email', '') == '' || data.email is string)
+        && data.totalAssignedHours is number;
+    }
+
+    function isValidExam(data) {
+      return data.subject is string && data.subject.size() > 0
+        && data.date is string && data.date.size() == 10
+        && data.session in ['Morning', 'Afternoon']
+        && data.duration is number && data.duration > 0;
+    }
+
+    function isValidRoom(data) {
+      return data.name is string && data.name.size() > 0
+        && data.proctorsRequired is number && data.proctorsRequired >= 0;
+    }
+
+    function isValidAssignment(data) {
+      return isValidId(data.examId) && isValidId(data.roomId) && isValidId(data.teacherId)
+        && data.date is string && data.session in ['Morning', 'Afternoon'];
+    }
+
+    // --- Routes ---
+
+    match /institutions/{institutionId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (resource.data.adminId == request.auth.uid || request.auth.uid in resource.data.collaborators);
+      
+      allow create: if isVerified() 
+        && incoming().adminId == request.auth.uid
+        && incoming().name is string && incoming().name.size() <= 100
+        && incoming().keys().hasAll(['name', 'adminId', 'collaborators']) 
+        && incoming().keys().size() == 3;
+        
+      allow update: if isVerified() && isAdmin(institutionId)
+        && incoming().adminId == existing().adminId
+        && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'collaborators']);
+
+      match /teachers/{teacherId} {
+        allow read: if isStaff(institutionId);
+        allow create: if isStaff(institutionId) && isValidTeacher(incoming()) && incoming().keys().size() >= 4;
+        allow update: if isStaff(institutionId) && isValidTeacher(incoming());
+        allow delete: if isAdmin(institutionId);
+      }
+
+      match /exams/{examId} {
+        allow read: if isStaff(institutionId);
+        allow create: if isStaff(institutionId) && isValidExam(incoming());
+        allow update: if isStaff(institutionId) && isValidExam(incoming());
+        allow delete: if isAdmin(institutionId);
+      }
+
+      match /rooms/{roomId} {
+        allow read: if isStaff(institutionId);
+        allow create: if isStaff(institutionId) && isValidRoom(incoming());
+        allow update: if isStaff(institutionId) && isValidRoom(incoming());
+        allow delete: if isAdmin(institutionId);
+      }
+
+      match /assignments/{assignmentId} {
+        allow read: if isStaff(institutionId);
+        allow create: if isStaff(institutionId) && isValidAssignment(incoming())
+          && exists(/databases/$(database)/documents/institutions/$(institutionId)/exams/$(incoming().examId))
+          && exists(/databases/$(database)/documents/institutions/$(institutionId)/rooms/$(incoming().roomId))
+          && exists(/databases/$(database)/documents/institutions/$(institutionId)/teachers/$(incoming().teacherId));
+        allow update: if isStaff(institutionId) && isValidAssignment(incoming());
+        allow delete: if isStaff(institutionId);
+      }
+
+      match /students/{studentId} {
+        allow read: if isStaff(institutionId);
+        allow write: if isStaff(institutionId);
+      }
+    }
+  }
+}

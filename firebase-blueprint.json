@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "Institution": {
+      "title": "Institution",
+      "description": "Educational institution data",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "adminId": { "type": "string" },
+        "collaborators": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "adminId"]
+    },
+    "Teacher": {
+      "title": "Teacher",
+      "description": "Teacher profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "specialty": { "type": "string" },
+        "seniority": { "type": "number" },
+        "totalAssignedHours": { "type": "number" },
+        "email": { "type": "string" }
+      },
+      "required": ["name", "specialty"]
+    },
+    "Exam": {
+      "title": "Exam",
+      "description": "Exam schedule item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "subject": { "type": "string" },
+        "date": { "type": "string" },
+        "session": { "type": "string", "enum": ["Morning", "Afternoon"] },
+        "duration": { "type": "number" }
+      },
+      "required": ["subject", "date", "session"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Exam room",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "proctorsRequired": { "type": "number" }
+      },
+      "required": ["name", "proctorsRequired"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Proctor assignment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "examId": { "type": "string" },
+        "roomId": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "date": { "type": "string" },
+        "session": { "type": "string" }
+      },
+      "required": ["examId", "roomId", "teacherId", "date", "session"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Student grade data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "grades": { "type": "object" },
+        "overallAverage": { "type": "number" }
+      },
+      "required": ["name"]
+    }
+  },
+  "firestore": {
+    "institutions/{institutionId}": {
+      "schema": "Institution",
+      "description": "Main institution configuration"
+    },
+    "institutions/{institutionId}/teachers/{teacherId}": {
+      "schema": "Teacher",
+      "description": "Teachers list"
+    },
+    "institutions/{institutionId}/exams/{examId}": {
+      "schema": "Exam",
+      "description": "Exams schedule"
+    },
+    "institutions/{institutionId}/rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Rooms list"
+    },
+    "institutions/{institutionId}/assignments/{assignmentId}": {
+      "schema": "Assignment",
+      "description": "Proctoring assignments"
+    },
+    "institutions/{institutionId}/students/{studentId}": {
+      "schema": "Student",
+      "description": "Student records for grading"
+    }
+  }
+}

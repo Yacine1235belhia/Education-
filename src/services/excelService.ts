@@ -396,5 +396,13 @@ export const excelService = {
     link.download = `نتائج_التلاميذ_${className && className !== 'ALL' ? className : 'الكل'}.xlsx`;
     link.click();
     window.URL.revokeObjectURL(url);
+  },
+
+  parseTeachersAndExams: (buffer: ArrayBuffer): { teachers: any[], exams: any[] } => {
+    const workbook = XLSX.read(buffer, { type: 'array' });
+    let teachers: any[] = [];
+    let exams: any[] = [];
+    
+    return { teachers: [], exams: [] };
   }
 };

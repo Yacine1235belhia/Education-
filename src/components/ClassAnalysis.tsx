@@ -12,8 +12,8 @@ interface ClassAnalysisProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-4 rounded-xl shadow-lg border border-slate-100 flex flex-col gap-1">
-        <p className="font-black text-slate-800 text-sm">{label}</p>
+      <div className="bg-white dark:bg-[#050505] p-4 rounded-xl shadow-lg border border-slate-100 dark:border-[#262626] flex flex-col gap-1">
+        <p className="font-black text-slate-800 dark:text-white text-sm">{label}</p>
         <p className="font-bold text-emerald-600 text-sm">
           المعدل: {payload[0].value}
         </p>
@@ -26,8 +26,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const CustomPieTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-4 rounded-xl shadow-lg border border-slate-100 flex flex-col gap-1">
-        <p className="font-black text-slate-800 text-sm">{payload[0].name}</p>
+      <div className="bg-white dark:bg-[#050505] p-4 rounded-xl shadow-lg border border-slate-100 dark:border-[#262626] flex flex-col gap-1">
+        <p className="font-black text-slate-800 dark:text-white text-sm">{payload[0].name}</p>
         <p className="font-bold text-emerald-600 text-sm">
           العدد: {payload[0].value} ({Math.round(payload[0].payload.percent * 100)}%)
         </p>
@@ -39,20 +39,6 @@ const CustomPieTooltip = ({ active, payload }: any) => {
 
 export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStudents }) => {
   if (!students || students.length === 0) return null;
-
-  const classComparisonData = React.useMemo(() => {
-    if (!allStudents) return [];
-    const classes = Array.from(new Set<string>(allStudents.map(s => (s.className as string) || 'غير مصنف')));
-    if (classes.length <= 1) return []; 
-    return classes.map(c => {
-      const clsStudents = allStudents.filter(s => (s.className || 'غير مصنف') === c);
-      const sum = clsStudents.reduce((acc, s) => acc + (s.overallAverage || 0), 0);
-      return {
-        name: c.length > 15 ? c.substring(0, 15) + '...' : c, // shorten names
-        average: Number((sum / (clsStudents.length || 1)).toFixed(2))
-      };
-    }).sort((a,b) => b.average - a.average);
-  }, [allStudents]);
 
   // Grade Distribution
   const excellent = students.filter(s => (s.overallAverage || 0) >= 15).length;
@@ -95,20 +81,20 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
         <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
           <TrendingUp className="w-5 h-5" />
         </div>
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight">تحليل البيانات والفروقات</h2>
+        <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">تحليل البيانات والفروقات</h2>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
-          <p className="text-slate-500 font-bold mb-2 uppercase tracking-wide text-xs">أعلى معدل</p>
+        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col items-center justify-center text-center">
+          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">أعلى معدل</p>
           <p className="text-3xl font-black text-emerald-600 font-mono">{max.toFixed(2)}</p>
         </div>
-        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
-          <p className="text-slate-500 font-bold mb-2 uppercase tracking-wide text-xs">أدنى معدل</p>
+        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col items-center justify-center text-center">
+          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">أدنى معدل</p>
           <p className="text-3xl font-black text-rose-600 font-mono">{min.toFixed(2)}</p>
         </div>
-         <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center text-center">
-          <p className="text-slate-500 font-bold mb-2 uppercase tracking-wide text-xs">الانحراف المعياري (التباين)</p>
+         <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col items-center justify-center text-center">
+          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">الانحراف المعياري (التباين)</p>
           <p className="text-3xl font-black text-indigo-600 font-mono">{stdDev.toFixed(2)}</p>
           <p className="text-[10px] text-slate-400 mt-2 font-bold">
             {stdDev < 2 ? 'مستوى القسم متقارب' : 'مستوى القسم متفاوت'}
@@ -117,8 +103,8 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100">
-          <h3 className="font-black text-lg text-slate-800 mb-6 flex items-center gap-2">
+        <div className="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626]">
+          <h3 className="font-black text-lg text-slate-800 dark:text-white mb-6 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 block"></span>
             معدلات التلاميذ (ترتيب تنازلي)
           </h3>
@@ -135,8 +121,8 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
           </div>
         </div>
 
-        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 flex flex-col">
-          <h3 className="font-black text-lg text-slate-800 mb-6 flex items-center gap-2">
+        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col">
+          <h3 className="font-black text-lg text-slate-800 dark:text-white mb-6 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-indigo-500 block"></span>
             التوزيع والمستويات
           </h3>
@@ -165,36 +151,14 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
             {distributionData.map((d, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }}></span>
-                <span className="text-xs font-bold text-slate-600 truncate">{d.name}</span>
+                <span className="text-xs font-bold text-slate-600 dark:text-[#d4d4d4] truncate">{d.name}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {classComparisonData && classComparisonData.length > 0 && (
-        <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 mt-8">
-          <h3 className="font-black text-lg text-slate-800 mb-6 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-violet-500 block"></span>
-            مقارنة معدلات الأقسام (الفروقات)
-          </h3>
-          <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={classComparisonData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} domain={[0, 20]} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: '#f8fafc'}} />
-                <Bar dataKey="average" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
-                  {classComparisonData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : '#8b5cf6'} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
+
 
     </div>
   );

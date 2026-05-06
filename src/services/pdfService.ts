@@ -1,15 +1,71 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import * as htmlToImage from 'html-to-image';
 import { Student } from '../types';
 
-// Extend jsPDF with autotable
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
-}
-
 export const pdfService = {
+  downloadHtmlAsPdf: async (elementId: string, filename: string) => {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    window.scrollTo(0, 0);
+
+    try {
+      // Wait a tiny bit for fonts to render if needed
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      let pages = Array.from(element.querySelectorAll('.pdf-page'));
+      if (element.classList.contains('pdf-page')) {
+        pages.unshift(element);
+      }
+      
+      if (pages.length === 0) {
+          console.error("No pages found to export.");
+          return;
+      }
+
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const margin = 10;
+      const printWidth = pdfWidth - (margin * 2);
+
+      let isFirstPage = true;
+
+      for (let i = 0; i < pages.length; i++) {
+        const pageEl = pages[i] as HTMLElement;
+
+        const dataUrl = await htmlToImage.toPng(pageEl, {
+          pixelRatio: 2,
+          backgroundColor: '#ffffff',
+          width: 800,
+          style: {
+            transform: 'none',
+            margin: '0',
+          }
+        });
+
+        if (!isFirstPage) {
+          pdf.addPage();
+        }
+
+        const imgProps = pdf.getImageProperties(dataUrl);
+        const printHeight = (imgProps.height * printWidth) / imgProps.width;
+
+        pdf.addImage(dataUrl, 'PNG', margin, margin, printWidth, printHeight);
+        isFirstPage = false;
+      }
+
+      pdf.save(filename);
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+    }
+  },
+
   generateStudentsReport: (students: Student[]) => {
     const doc = new jsPDF({
       orientation: 'p',
@@ -20,7 +76,7 @@ export const pdfService = {
     doc.setFontSize(22);
     doc.text('Class Performance Summary', 105, 20, { align: 'center' });
     doc.setFontSize(14);
-    doc.text(`EduGrade - Teacher: Belhia Yacine`, 105, 30, { align: 'center' });
+    doc.text(`Teacher: Belhia Yacine`, 105, 30, { align: 'center' });
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 38, { align: 'center' });
 
     const tableData = students.map(s => [
@@ -31,7 +87,7 @@ export const pdfService = {
       (s.overallAverage || 0) >= 10 ? 'Passed' : 'Needs Support'
     ]);
 
-    doc.autoTable({
+    (doc as any).autoTable({
       startY: 50,
       head: [['Rank', 'ID', 'Student Name', 'Overall Avg', 'Status']],
       body: tableData,
@@ -68,7 +124,7 @@ export const pdfService = {
       g.average?.toFixed(2) || '-'
     ]);
 
-    doc.autoTable({
+    (doc as any).autoTable({
       startY: 70,
       head: [['Subject', 'Eval', 'Prac/Oral', 'Quiz', 'Exam', 'Final Avg']],
       body: gradesData,

@@ -22,7 +22,11 @@ export interface Student {
   recommendations?: string;
 }
 
-export interface SubjectConfig {
+export interface TeacherConfig {
   name: string;
-  coefficient: number;
+  institution: string;
+  subject: string;
+  level: string;
+  hasPractical: boolean;
+  academicYear: string;
 }
