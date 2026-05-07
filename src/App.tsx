@@ -4,6 +4,7 @@ import { ExcelImporter } from "./components/ExcelImporter";
 import { GradeTable } from "./components/GradeTable";
 import { StudentAnalysis } from "./components/StudentAnalysis";
 import { ClassAnalysis } from "./components/ClassAnalysis";
+import { ResponsibleTeacherFeature } from "./components/ResponsibleTeacherFeature";
 import { Login } from "./components/Login";
 import { storageService } from "./services/storageService";
 import { Student, TeacherConfig } from "./types";
@@ -1096,6 +1097,12 @@ export default function App() {
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === "responsible_teacher" && (
+          <div className="py-6">
+            <ResponsibleTeacherFeature teacherConfig={teacherConfig} />
           </div>
         )}
 

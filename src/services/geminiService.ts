@@ -8,6 +8,35 @@ export class GeminiService {
     this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
   }
 
+  async analyzeClassOverallPerformance(reportStr: string) {
+    if (!process.env.GEMINI_API_KEY) return "يرجى ضبط مفتاح API للحصول على تحليل ذكي.";
+
+    try {
+      const prompt = `أنت مساعد تربوي ذكي، ومستشار توجيه خبير في النظام التعليمي الجزائري.
+      طلب منك الأستاذ المسؤول عن القسم تقديم قراءة تحليلية دقيقة وشاملة لنتائج القسم بناء على البيانات التالية:
+      
+      ${reportStr}
+      
+      المهمة المطلوبة:
+      1. اقرأ البيانات الإحصائية لكل مادة (المعدل، نسبة النجاح) وعلق على نقاط القوة والضعف في القسم.
+      2. حلل التباين بين أعلى وأدنى معدل والمعدل العام.
+      3. قم بقراءة لعدد التلاميذ في كل فئة من فئات المعدلات (ممتاز 18-20، جيد جدا 16-17.99، إلخ...).
+      4. قدم نصائح عامة وتوجيهات للأستاذ المسؤول والفريق التربوي للقسم لتحسين المردود في الفصل القادم.
+      
+      الأسلوب: مهني، تحليلي، وبالعربية.`;
+
+      const response = await this.ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      });
+      
+      return response.text || "عذراً، لم نتمكن من الحصول على تحليل.";
+    } catch (error) {
+      console.error("Gemini Error:", error);
+      return "عذراً، حدث خطأ أثناء تحليل بيانات القسم. يرجى المحاولة لاحقاً.";
+    }
+  }
+
   async analyzeStudentPerformance(student: Student) {
     if (!process.env.GEMINI_API_KEY) return "يرجى ضبط مفتاح API للحصول على تحليل ذكي.";
 

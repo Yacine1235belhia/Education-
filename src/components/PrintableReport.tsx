@@ -38,8 +38,8 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
     : "0.00";
 
   // Pagination Logic
-  const PAGE_1_LIMIT = 20; // First page has header and school info
-  const PAGE_LIMIT = 35;   // Other pages have only table headers
+  const PAGE_1_LIMIT = 30; // First page has header and school info
+  const PAGE_LIMIT = 45;   // Other pages have only table headers
   
   const studentChunks: Student[][] = [];
   const studentsCopy = [...students];
@@ -54,7 +54,7 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
   // If the last chunk is almost full, the analysis stats might overflow.
   // Let's decide if stats need a new page.
   const lastChunkSize = studentChunks.length > 0 ? studentChunks[studentChunks.length - 1].length : 0;
-  const statsNeedNewPage = lastChunkSize > (studentChunks.length === 1 ? PAGE_1_LIMIT - 10 : PAGE_LIMIT - 10);
+  const statsNeedNewPage = lastChunkSize > (studentChunks.length === 1 ? PAGE_1_LIMIT - 12 : PAGE_LIMIT - 12);
 
   const TableColGroups = () => (
     <colgroup>
@@ -72,14 +72,14 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
   const TableHeader = () => (
     <thead style={{ display: 'table-header-group' }}>
       <tr style={{ backgroundColor: '#e5e7eb' }}>
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>ت</th>
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>اللقب</th>
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>الاسم</th>
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>التقويم</th>
-         {teacherConfig.hasPractical && <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>أ.ت/ م</th>}
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>الفرض</th>
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000' }}>الاختبار</th>
-         <th style={{ padding: '10px 5px', fontWeight: '900', border: '1px solid #000000', backgroundColor: '#d1d5db' }}>المعدل</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>ت</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>اللقب</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>الاسم</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>التقويم</th>
+         {teacherConfig.hasPractical && <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>أ.ت/ م</th>}
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>الفرض</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>الاختبار</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', backgroundColor: '#d1d5db', fontSize: '12px' }}>المعدل</th>
        </tr>
     </thead>
   );
@@ -92,55 +92,55 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
     
     return (
       <tr style={{ borderBottom: '1px solid #000000' }}>
-        <td style={{ padding: '10px 5px', fontWeight: '700', border: '1px solid #000000' }}>{index}</td>
-        <td style={{ padding: '10px 5px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lastName}</td>
-        <td style={{ padding: '10px 5px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{firstName}</td>
-        <td style={{ padding: '10px 5px', border: '1px solid #000000' }}>{mainGrade.evaluation ?? '-'}</td>
-        {teacherConfig.hasPractical && <td style={{ padding: '10px 5px', border: '1px solid #000000' }}>{mainGrade.practical ?? '-'}</td>}
-        <td style={{ padding: '10px 5px', border: '1px solid #000000' }}>{mainGrade.quiz ?? '-'}</td>
-        <td style={{ padding: '10px 5px', border: '1px solid #000000' }}>{mainGrade.exam ?? '-'}</td>
-        <td style={{ padding: '10px 5px', border: '1px solid #000000', fontWeight: '900', backgroundColor: '#f3f4f6' }}>{student.overallAverage?.toFixed(2) || '-'}</td>
+        <td style={{ padding: '2px', fontWeight: '700', border: '1px solid #000000', fontSize: '11px' }}>{index}</td>
+        <td style={{ padding: '2px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '11px' }}>{lastName}</td>
+        <td style={{ padding: '2px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '11px' }}>{firstName}</td>
+        <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.evaluation ?? '-'}</td>
+        {teacherConfig.hasPractical && <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.practical ?? '-'}</td>}
+        <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.quiz ?? '-'}</td>
+        <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.exam ?? '-'}</td>
+        <td style={{ padding: '2px', border: '1px solid #000000', fontWeight: '900', backgroundColor: '#f3f4f6', fontSize: '12px' }}>{student.overallAverage?.toFixed(2) || '-'}</td>
       </tr>
     );
   };
 
   const AnalysisSection = () => (
-    <div style={{ backgroundColor: '#ffffff', padding: '24px', border: '2px solid #000000', borderRadius: '4px', width: '100%', marginTop: '30px' }}>
-      <h3 style={{ fontSize: '18px', fontWeight: '900', marginBottom: '20px', borderBottom: '2px solid #000000', paddingBottom: '8px' }}>التحليل الإحصائي للنتائج:</h3>
+    <div style={{ backgroundColor: '#ffffff', padding: '16px', border: '2px solid #000000', borderRadius: '4px', width: '100%', marginTop: '16px' }}>
+      <h3 style={{ fontSize: '16px', fontWeight: '900', marginBottom: '12px', borderBottom: '2px solid #000000', paddingBottom: '6px' }}>التحليل الإحصائي للنتائج:</h3>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '6px 0' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>العدد الكلي للتلاميذ:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>{totalStudents}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '4px 0' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>العدد الكلي للتلاميذ:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>{totalStudents}</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '6px 0' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>عدد التلاميذ الحاصلين على المعدل:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>{passingStudents}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '4px 0' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>عدد التلاميذ الحاصلين على المعدل:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>{passingStudents}</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '6px 0' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>معدل القسم:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>{classAverage}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '4px 0' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>معدل القسم:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>{classAverage}</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000000', padding: '6px 0', marginBottom: '24px' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>نسبة النجاح العامة:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px', color: parseFloat(successRate) >= 50 ? '#059669' : '#dc2626' }}>%{successRate}</span>
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '6px 0', marginTop: '12px' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>صاحب أعلى معدل:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>{highestStudent?.name} ({highestStudent?.overallAverage?.toFixed(2)})</span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000000', padding: '6px 0', marginBottom: '24px' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>صاحب أدنى معدل:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>{lowestStudent?.name} ({lowestStudent?.overallAverage?.toFixed(2)})</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000000', padding: '4px 0', marginBottom: '16px' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>نسبة النجاح العامة:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px', color: parseFloat(successRate) >= 50 ? '#059669' : '#dc2626' }}>%{successRate}</span>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '6px 0', marginTop: '12px' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>معدل القسم في الاختبار:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>{examAverage}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '4px 0', marginTop: '8px' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>صاحب أعلى معدل:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>{highestStudent?.name} ({highestStudent?.overallAverage?.toFixed(2)})</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000000', padding: '6px 0' }}>
-        <span style={{ fontWeight: '900', fontSize: '14px' }}>نسبة النجاح في الاختبار:</span>
-        <span style={{ fontWeight: '900', fontSize: '14px', color: parseFloat(examSuccessRate) >= 50 ? '#059669' : '#dc2626' }}>%{examSuccessRate}</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000000', padding: '4px 0', marginBottom: '16px' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>صاحب أدنى معدل:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>{lowestStudent?.name} ({lowestStudent?.overallAverage?.toFixed(2)})</span>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e5e7eb', padding: '4px 0', marginTop: '8px' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>معدل القسم في الاختبار:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>{examAverage}</span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000000', padding: '4px 0' }}>
+        <span style={{ fontWeight: '900', fontSize: '13px' }}>نسبة النجاح في الاختبار:</span>
+        <span style={{ fontWeight: '900', fontSize: '13px', color: parseFloat(examSuccessRate) >= 50 ? '#059669' : '#dc2626' }}>%{examSuccessRate}</span>
       </div>
     </div>
   );
@@ -162,20 +162,20 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
               {isFirstPage && (
                 <>
                   {/* Main Header */}
-                  <div style={{ backgroundColor: '#f3f4f6', padding: '20px', textAlign: 'center', marginBottom: '30px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-                    <h1 style={{ fontSize: '26px', fontWeight: '900', margin: '0', color: '#111827' }}>كشف النقاط والتحليل الإحصائي</h1>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginTop: '12px', fontSize: '16px', fontWeight: '700', color: '#4b5563' }}>
+                  <div style={{ backgroundColor: '#f3f4f6', padding: '12px', textAlign: 'center', marginBottom: '20px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                    <h1 style={{ fontSize: '20px', fontWeight: '900', margin: '0', color: '#111827' }}>كشف النقاط والتحليل الإحصائي</h1>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginTop: '8px', fontSize: '14px', fontWeight: '700', color: '#4b5563' }}>
                       <span>المادة: {teacherConfig.subject}</span>
                       <span>الأستاذ(ة): {teacherConfig.name}</span>
                     </div>
                   </div>
 
                   {/* School Info Header */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-                    <h2 style={{ fontSize: '18px', fontWeight: '900', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
+                    <h2 style={{ fontSize: '16px', fontWeight: '900', marginBottom: '6px' }}>
                       ثانوية: {teacherConfig.institution} ..................... قسم: {className === 'ALL' ? '............' : className}
                     </h2>
-                    <p style={{ fontSize: '14px', fontWeight: '700' }}>السنة الدراسية: {teacherConfig.academicYear}</p>
+                    <p style={{ fontSize: '13px', fontWeight: '700' }}>السنة الدراسية: {teacherConfig.academicYear}</p>
                   </div>
                 </>
               )}

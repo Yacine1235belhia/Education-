@@ -137,6 +137,12 @@ export const Layout = ({
             onClick={() => setActiveTab("import")}
           />
           <NavItem
+            icon={FileSpreadsheet}
+            label="خاصية الأستاذ المسؤول"
+            active={activeTab === "responsible_teacher"}
+            onClick={() => setActiveTab("responsible_teacher")}
+          />
+          <NavItem
             icon={Settings}
             label="الإعدادات"
             active={activeTab === "settings"}
@@ -282,6 +288,15 @@ export const Layout = ({
           className="p-2 transition-transform active:scale-90 text-slate-300 hover:text-emerald-600"
         >
           <Download className="w-6 h-6" />
+        </button>
+        <button
+          onClick={() => setActiveTab("responsible_teacher")}
+          className={cn(
+            "p-2 transition-transform active:scale-90",
+            activeTab === "responsible_teacher" ? "text-emerald-600" : "text-slate-300",
+          )}
+        >
+          <FileSpreadsheet className="w-6 h-6" />
         </button>
         <button
           onClick={() => setActiveTab("settings")}
