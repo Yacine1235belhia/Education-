@@ -113,9 +113,25 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [students, setStudents] = useState<Student[]>([]);
+  const [students, setStudents] = useState<Student[]>(() => {
+    try {
+      const saved = localStorage.getItem("edugrade_students");
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedClass, setSelectedClass] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem("edugrade_students");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.length > 0 ? (parsed[0].className || "") : "";
+      }
+    } catch (e) {}
+    return "";
+  });
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showPrintMenu, setShowPrintMenu] = useState(false);
   const [showTeacherConfigModal, setShowTeacherConfigModal] = useState(false);
@@ -130,14 +146,22 @@ export default function App() {
   const [printingMode, setPrintingMode] = useState<
     "report" | "certificates" | null
   >(null);
-  const [teacherConfig, setTeacherConfig] = useState<TeacherConfig>({
-    name: "",
-    institution: "",
-    subject: "",
-    level: "ثانوي",
-    province: "",
-    hasPractical: false,
-    academicYear: "2025/2026",
+  const [teacherConfig, setTeacherConfig] = useState<TeacherConfig>(() => {
+    const defaultConfig = {
+      name: "",
+      institution: "",
+      subject: "",
+      level: "ثانوي",
+      province: "",
+      hasPractical: false,
+      academicYear: "2025/2026",
+    };
+    try {
+      const saved = localStorage.getItem("edugrade_teacher_config");
+      return saved ? { ...defaultConfig, ...JSON.parse(saved) } : defaultConfig;
+    } catch (e) {
+      return defaultConfig;
+    }
   });
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -205,6 +229,17 @@ export default function App() {
     }, 500);
   };
 
+  // Persistence effects
+  useEffect(() => {
+    if (students && students.length >= 0) {
+      localStorage.setItem("edugrade_students", JSON.stringify(students));
+    }
+  }, [students]);
+
+  useEffect(() => {
+    localStorage.setItem("edugrade_teacher_config", JSON.stringify(teacherConfig));
+  }, [teacherConfig]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -244,10 +279,6 @@ export default function App() {
             if (fbStudents.length > 0) {
               setStudents(fbStudents);
               setSelectedClass((prev) => prev || fbStudents[0].className || "");
-            } else {
-              // If Firebase is empty, but state has students (e.g. from local migration or sample)
-              // we might want to keep them or sync them up.
-              // For now, if empty in cloud, we keep local until first save.
             }
           },
         );
@@ -257,28 +288,9 @@ export default function App() {
       }
     });
 
-    const saved = localStorage.getItem("edugrade_students");
-    if (saved && !user) {
-      const parsedStudents = JSON.parse(saved);
-      setStudents(parsedStudents);
-      if (parsedStudents.length > 0) {
-        setSelectedClass(parsedStudents[0].className || "");
-      }
-    }
-
     const savedTheme = localStorage.getItem("edugrade_theme");
     if (savedTheme)
       document.documentElement.setAttribute("data-theme", savedTheme);
-
-    const savedConfig = localStorage.getItem("edugrade_teacher_config");
-    if (savedConfig) {
-      const parsedConfig = JSON.parse(savedConfig);
-      setTeacherConfig(prev => ({
-        ...prev,
-        ...parsedConfig,
-        province: parsedConfig.province || prev.province || ""
-      }));
-    }
 
     return () => unsubscribe();
   }, []);
