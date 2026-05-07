@@ -320,7 +320,7 @@ export default function App() {
     localStorage.setItem("edugrade_teacher_config", JSON.stringify(newConfig));
 
     if (user) {
-      await firebaseStorage.saveTeacherConfig(user.uid, newConfig);
+      firebaseStorage.saveTeacherConfig(user.uid, newConfig).catch(e => console.error(e));
     }
 
     if (hasPracticalChanged) {
@@ -358,7 +358,7 @@ export default function App() {
       });
       setStudents(updatedStudents);
       if (user) {
-        await firebaseStorage.saveStudentsBatch(institutionId, updatedStudents);
+        firebaseStorage.saveStudentsBatch(institutionId, updatedStudents).catch(e => console.error(e));
       } else {
         localStorage.setItem(
           "edugrade_students",
@@ -385,7 +385,7 @@ export default function App() {
     );
 
     if (user) {
-      await firebaseStorage.saveTeacherConfig(user.uid, defaultConfig);
+      firebaseStorage.saveTeacherConfig(user.uid, defaultConfig).catch(e => console.error(e));
     }
 
     setShowResetConfigConfirm(false);
@@ -434,7 +434,7 @@ export default function App() {
       setStudents(stabilizedData);
 
       if (user) {
-        await firebaseStorage.saveStudentsBatch(institutionId, stabilizedData);
+        firebaseStorage.saveStudentsBatch(institutionId, stabilizedData).catch(e => console.error(e));
       } else {
         localStorage.setItem(
           "edugrade_students",

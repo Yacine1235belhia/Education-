@@ -43,6 +43,8 @@ export const pdfService = {
           pixelRatio: 2,
           backgroundColor: '#ffffff',
           width: 800,
+          skipFonts: true,
+          fontEmbedCSS: '',
           style: {
             transform: 'none',
             margin: '0',

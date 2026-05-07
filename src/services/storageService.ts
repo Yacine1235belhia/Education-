@@ -6,6 +6,7 @@ import {
   deleteDoc, 
   query, 
   where,
+  getDoc,
   getDocFromServer
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
@@ -112,7 +113,7 @@ export const storageService = {
   ensureInstitution: async (uid: string, name: string) => {
     try {
       const instRef = doc(db, 'institutions', uid);
-      const snap = await getDocFromServer(instRef);
+      const snap = await getDoc(instRef);
       if (!snap.exists()) {
         await setDoc(instRef, {
           name: name,
@@ -120,7 +121,11 @@ export const storageService = {
           collaborators: []
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.message?.includes('client is offline')) {
+        console.warn("Client is offline, skipping ensureInstitution.");
+        return;
+      }
       // If we can't create/get institution, we might have permission issues
       console.error("Error ensuring institution:", error);
     }
@@ -136,7 +141,7 @@ export const storageService = {
 
   getTeacherConfig: async (institutionId: string): Promise<any | null> => {
     try {
-      const snap = await getDocFromServer(doc(db, `institutions/${institutionId}/config`, 'teacher'));
+      const snap = await getDoc(doc(db, `institutions/${institutionId}/config`, 'teacher'));
       return snap.exists() ? snap.data() : null;
     } catch (error) {
       return null;
