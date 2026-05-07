@@ -14,6 +14,7 @@ import { PrintableReport } from "./components/PrintableReport";
 import { PrintableClassesAnalysis } from "./components/PrintableClassesAnalysis";
 import { PrintableCertificates } from "./components/PrintableCertificates";
 import { TeacherConfigModal } from "./components/TeacherConfigModal";
+import { RatingModal } from "./components/RatingModal";
 import {
   Users,
   GraduationCap,
@@ -273,9 +274,16 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
+  const [showRatingModal, setShowRatingModal] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowRatingModal(true);
+  };
+
+  const handleLogoutConfirm = () => {
     setIsLoggedIn(false);
     sessionStorage.removeItem("edugrade_auth");
+    setShowRatingModal(false);
   };
 
   const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -598,7 +606,7 @@ export default function App() {
       <Layout
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onLogout={handleLogout}
+        onLogout={handleLogoutClick}
         onPrintMenuClick={() => handlePrintRequest("menu")}
       >
         {activeTab === "dashboard" && (
@@ -1172,6 +1180,12 @@ export default function App() {
           </div>
         )}
       </Layout>
+
+      <RatingModal
+        isOpen={showRatingModal}
+        onClose={() => setShowRatingModal(false)}
+        onSubmit={handleLogoutConfirm}
+      />
 
       <AnimatePresence>
         {showPrintMenu && (
