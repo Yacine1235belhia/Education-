@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Lock, User, GraduationCap, Chrome, BookOpen, PenTool, Calculator, Ruler, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '../lib/utils';
 
 interface LoginProps {
   onLogin: (success: boolean) => void;
@@ -8,12 +10,14 @@ interface LoginProps {
 
 export const Login = ({ onLogin }: LoginProps) => {
 
+  const { t, i18n } = useTranslation();
+
   const handleEnter = () => {
     onLogin(true);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#111111] p-4 font-sans relative overflow-hidden" dir="rtl">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#111111] p-4 font-sans relative overflow-hidden" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Background Decor */}
       <div className="absolute inset-0 dots-bg opacity-40" />
       <div className="absolute inset-0 mesh-bg opacity-60" />
@@ -78,8 +82,8 @@ export const Login = ({ onLogin }: LoginProps) => {
                <GraduationCap className="w-14 h-14 text-emerald-600" />
             </div>
             <div className="space-y-4">
-              <h1 className="text-3xl font-black tracking-tighter font-display">مرحبا بكم في منصة الأستاذ</h1>
-              <p className="text-emerald-400 text-lg font-bold uppercase tracking-widest leading-relaxed">بلحية ياسين</p>
+              <h1 className="text-3xl font-black tracking-tighter font-display">{t('welcome_msg')}</h1>
+              <p className="text-emerald-400 text-lg font-bold uppercase tracking-widest leading-relaxed">{t('teacher')}</p>
             </div>
           </div>
         </div>
@@ -88,7 +92,7 @@ export const Login = ({ onLogin }: LoginProps) => {
           
           <div className="text-center space-y-4">
             <p className="text-slate-500 font-bold leading-relaxed">
-              المنصة الشاملة لإدارة وتحليل وتقييم نتائج التلاميذ بكل سهولة واحترافية.
+              {t('platform_desc')}
             </p>
           </div>
 
@@ -96,12 +100,12 @@ export const Login = ({ onLogin }: LoginProps) => {
             onClick={handleEnter}
             className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all shadow-[0_20px_40px_-10px_rgba(16,185,129,0.4)] flex items-center justify-center gap-3 active:scale-95 group"
           >
-            <span>دخول للمنصة</span>
-            <ArrowLeft className="w-6 h-6 transition-transform group-hover:-translate-x-2" />
+            <span>{t('enter_platform')}</span>
+            <ArrowLeft className={cn("w-6 h-6 transition-transform", i18n.language === 'ar' ? "group-hover:-translate-x-2" : "group-hover:translate-x-2")} />
           </button>
 
           <div className="text-center">
-            <p className="text-slate-300 text-[10px] font-black uppercase tracking-widest">© 2026 • الأستاذ بلحية ياسين</p>
+            <p className="text-slate-300 text-[10px] font-black uppercase tracking-widest">{t('copyright')}</p>
           </div>
         </div>
       </motion.div>

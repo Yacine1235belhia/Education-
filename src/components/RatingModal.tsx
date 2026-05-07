@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, X, Send, Heart, MessageSquare } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '../lib/utils';
 
 interface RatingModalProps {
   isOpen: boolean;
@@ -9,6 +11,7 @@ interface RatingModalProps {
 }
 
 export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => {
+  const { t, i18n } = useTranslation();
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -38,7 +41,7 @@ export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-lg p-4 sm:p-6"
-            dir="rtl"
+            dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
           >
             <div className="bg-white dark:bg-[#050505] rounded-[2.5rem] shadow-2xl p-8 border border-slate-100 dark:border-slate-800 relative overflow-hidden">
               {/* Background Decoration */}
@@ -59,9 +62,9 @@ export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => 
                     <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Heart className="w-10 h-10 text-emerald-500" />
                     </div>
-                    <h2 className="text-3xl font-black text-slate-800 dark:text-white mt-4">إلى اللقاء قريبًا!</h2>
+                    <h2 className="text-3xl font-black text-slate-800 dark:text-white mt-4">{t('farewell')}</h2>
                     <p className="text-slate-500 dark:text-slate-400 font-bold leading-relaxed text-sm">
-                      قبل المغادرة، نود معرفة رأيك في منصة الأستاذ بلحية ياسين. تقييمك يساعدنا على التحسن.
+                      {t('feedback_msg')}
                     </p>
                   </div>
 
@@ -88,12 +91,12 @@ export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => 
                   <div className="space-y-3">
                     <label className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400">
                       <MessageSquare className="w-4 h-4" />
-                      <span>هل لديك أي اقتراحات أو ملاحظات؟ (اختياري)</span>
+                      <span>{t('suggestions')}</span>
                     </label>
                     <textarea
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
-                      placeholder="اكتب رسالتك هنا..."
+                      placeholder={t('feedback_placeholder') as string}
                       className="w-full h-32 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none text-right placeholder-slate-400 text-slate-700 dark:text-slate-200"
                     />
                   </div>
@@ -103,8 +106,8 @@ export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => 
                     disabled={rating === 0}
                     className="w-full p-4 bg-emerald-600 text-white rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_20px_-10px_rgba(16,185,129,0.5)]"
                   >
-                    <span>إرسال التقييم والخروج</span>
-                    <Send className="w-5 h-5 -scale-x-100" />
+                    <span>{t('submit_feedback')}</span>
+                    <Send className={cn("w-5 h-5", i18n.language === 'ar' ? "-scale-x-100" : "")} />
                   </button>
                 </div>
               ) : (
@@ -112,9 +115,9 @@ export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => 
                   <div className="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
                     <Star className="w-12 h-12 text-emerald-500 fill-emerald-500" />
                   </div>
-                  <h2 className="text-3xl font-black text-slate-800 dark:text-white">شكراً لتقييمك!</h2>
+                  <h2 className="text-3xl font-black text-slate-800 dark:text-white">{t('thanks_feedback')}</h2>
                   <p className="text-slate-500 dark:text-slate-400 font-bold">
-                    نحن نقدر وقتك. جاري تسجيل الخروج...
+                    {t('logging_out')}
                   </p>
                 </div>
               )}

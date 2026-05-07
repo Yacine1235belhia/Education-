@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "./lib/utils";
+import { useTranslation } from "react-i18next";
 
 import { auth, db } from "./lib/firebase";
 import { onAuthStateChanged, type User } from "firebase/auth";
@@ -99,6 +100,12 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
 );
 
 export default function App() {
+  const { t, i18n } = useTranslation();
+  
+  useEffect(() => {
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+  }, [i18n.language]);
+
   const [user, setUser] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -637,7 +644,7 @@ export default function App() {
                       ))}
                     </select>
                     <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                      <ChevronRight className="w-5 h-5 rotate-90" />
+                      <ChevronRight className={cn("w-5 h-5", i18n.language === 'ar' ? "rotate-90" : "rotate-0")} />
                     </div>
                   </div>
                 )}
@@ -1149,6 +1156,50 @@ export default function App() {
                         onClick={() => changeTheme("rose")}
                         className="w-10 h-10 rounded-full bg-rose-500 ring-4 ring-rose-50 dark:ring-rose-900/40 hover:scale-110 transition-transform shadow-sm"
                       />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">
+                      {t("language", "لغة التطبيق")}
+                    </p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage('ar');
+                          localStorage.setItem('appLanguage', 'ar');
+                        }}
+                        className={cn(
+                          "flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors",
+                          i18n.language === 'ar' && "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 border-emerald-200"
+                        )}
+                      >
+                        {t("language_ar", "العربية")}
+                      </button>
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage('fr');
+                          localStorage.setItem('appLanguage', 'fr');
+                        }}
+                        className={cn(
+                          "flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors",
+                          i18n.language === 'fr' && "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 border-emerald-200"
+                        )}
+                      >
+                        {t("language_fr", "الفرنسية")}
+                      </button>
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage('en');
+                          localStorage.setItem('appLanguage', 'en');
+                        }}
+                        className={cn(
+                          "flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors",
+                          i18n.language === 'en' && "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 border-emerald-200"
+                        )}
+                      >
+                        {t("language_en", "الإنجليزية")}
+                      </button>
                     </div>
                   </div>
 

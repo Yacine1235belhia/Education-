@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Users,
@@ -56,6 +57,8 @@ export const Layout = ({
   onLogout,
   onPrintMenuClick,
 }: LayoutProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div
       className="flex flex-col md:flex-row min-h-screen bg-white dark:bg-[#050505] font-sans text-slate-900 dark:text-white overflow-hidden"
@@ -120,37 +123,37 @@ export const Layout = ({
         <nav className="flex flex-col gap-2 flex-1">
           <NavItem
             icon={LayoutDashboard}
-            label="لوحة التحكم"
+            label={t("dashboard", "لوحة التحكم")}
             active={activeTab === "dashboard"}
             onClick={() => setActiveTab("dashboard")}
           />
           <NavItem
             icon={Users}
-            label="قائمة التلاميذ"
+            label={t("data_entry", "قائمة التلاميذ")}
             active={activeTab === "students"}
             onClick={() => setActiveTab("students")}
           />
           <NavItem
             icon={FileSpreadsheet}
-            label="رفع البيانات"
+            label={t("analysis", "رفع البيانات")}
             active={activeTab === "import"}
             onClick={() => setActiveTab("import")}
           />
           <NavItem
             icon={FileSpreadsheet}
-            label="خاصية الأستاذ المسؤول"
+            label={t("responsible_teacher", "خاصية الأستاذ المسؤول")}
             active={activeTab === "responsible_teacher"}
             onClick={() => setActiveTab("responsible_teacher")}
           />
           <NavItem
             icon={Settings}
-            label="الإعدادات"
+            label={t("settings", "الإعدادات")}
             active={activeTab === "settings"}
             onClick={() => setActiveTab("settings")}
           />
           <NavItem
             icon={Download}
-            label="تحميل التقارير"
+            label={t("print_reports", "تحميل التقارير")}
             active={false}
             onClick={() => onPrintMenuClick?.()}
           />
@@ -162,7 +165,7 @@ export const Layout = ({
             className="flex items-center gap-3 px-6 py-4 rounded-2xl text-rose-500 hover:bg-rose-50 transition-all duration-300 w-full group border border-transparent hover:border-rose-100 font-bold"
           >
             <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="tracking-tight">تسجيل الخروج</span>
+            <span className="tracking-tight">{t("logout", "تسجيل الخروج")}</span>
           </button>
 
           <div className="p-6 bg-slate-900 rounded-[2.5rem] border border-white/5 relative overflow-hidden group shadow-2xl">
