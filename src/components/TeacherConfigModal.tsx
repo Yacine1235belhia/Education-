@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { X, User as UserIcon, BookOpen, GraduationCap } from 'lucide-react';
+import { X, User as UserIcon, BookOpen, GraduationCap, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
 import { TeacherConfig } from '../types';
@@ -56,7 +56,7 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
                 <UserIcon className={cn("absolute top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5", isRTL ? "right-5" : "left-5")} />
                 <input 
                   type="text" 
-                  value={teacherConfig.name}
+                  value={teacherConfig.name || ""}
                   onChange={(e) => updateTeacherConfig({...teacherConfig, name: e.target.value})}
                   className={cn(
                     "w-full bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#262626] py-4 rounded-[1.5rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 transition-all",
@@ -84,7 +84,7 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
                 <BookOpen className={cn("absolute top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5", isRTL ? "right-5" : "left-5")} />
                 <input 
                   type="text" 
-                  value={teacherConfig.subject}
+                  value={teacherConfig.subject || ""}
                   onChange={(e) => updateTeacherConfig({...teacherConfig, subject: e.target.value})}
                   className={cn(
                     "w-full bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#262626] py-4 rounded-[1.5rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 transition-all",
@@ -113,7 +113,7 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
               <GraduationCap className={cn("absolute top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5", isRTL ? "right-5" : "left-5")} />
               <input 
                 type="text" 
-                value={teacherConfig.institution}
+                value={teacherConfig.institution || ""}
                 onChange={(e) => updateTeacherConfig({...teacherConfig, institution: e.target.value})}
                 className={cn(
                   "w-full bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#262626] py-4 rounded-[1.5rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 transition-all",
@@ -141,7 +141,7 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
               <div className="relative">
                 <input 
                   type="text" 
-                  value={teacherConfig.academicYear}
+                  value={teacherConfig.academicYear || ""}
                   onChange={(e) => updateTeacherConfig({...teacherConfig, academicYear: e.target.value})}
                   className="w-full bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#262626] px-12 py-4 rounded-[1.5rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 transition-all text-center"
                   placeholder={t('academic_year_placeholder') as string}
@@ -149,6 +149,34 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
                 {teacherConfig.academicYear && (
                   <button 
                     onClick={() => updateTeacherConfig({...teacherConfig, academicYear: ''})}
+                    className={cn(
+                      "absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-200 hover:bg-slate-300 rounded-full flex items-center justify-center text-slate-500 dark:text-[#a3a3a3] transition-colors",
+                      isRTL ? "left-4" : "right-4"
+                    )}
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">{t('province_label', 'الولاية')}</label>
+              <div className="relative">
+                <MapPin className={cn("absolute top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5", isRTL ? "right-5" : "left-5")} />
+                <input 
+                  type="text" 
+                  value={teacherConfig.province || ""}
+                  onChange={(e) => updateTeacherConfig({...teacherConfig, province: e.target.value})}
+                  className={cn(
+                    "w-full bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#262626] py-4 rounded-[1.5rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 transition-all",
+                    isRTL ? "pr-14 pl-12" : "pl-14 pr-12"
+                  )}
+                  placeholder={t('province_placeholder', 'مثلاً: الجزائر، وهران...') as string}
+                />
+                {teacherConfig.province && (
+                  <button 
+                    onClick={() => updateTeacherConfig({...teacherConfig, province: ''})}
                     className={cn(
                       "absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-200 hover:bg-slate-300 rounded-full flex items-center justify-center text-slate-500 dark:text-[#a3a3a3] transition-colors",
                       isRTL ? "left-4" : "right-4"

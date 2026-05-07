@@ -27,6 +27,7 @@ export interface TeacherConfig {
   institution: string;
   subject: string;
   level: string;
+  province: string;
   hasPractical: boolean;
   academicYear: string;
 }

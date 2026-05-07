@@ -161,6 +161,8 @@
   "teacher_name_placeholder": "مثال: بلحية ياسين",
   "subject_placeholder": "مثال: الرياضيات",
   "institution_placeholder": "مثال: ثانوية المتفوقين",
+  "province_label": "الولاية",
+  "province_placeholder": "مثال: الجزائر، وهران...",
   "academic_year": "السنة الدراسية",
   "academic_year_placeholder": "2025/2026",
   "auto_calc": "الحساب التلقائي",

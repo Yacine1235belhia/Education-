@@ -18,10 +18,10 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
         {topStudents.map((student, index) => (
           <div 
             key={student.id} 
-            className="pdf-page w-[1123px] h-[794px] p-8 relative flex flex-col items-center justify-center text-center overflow-hidden"
+            className="pdf-page w-[1123px] h-[794px] p-8 relative flex flex-col items-center justify-center text-center overflow-hidden mb-12 shadow-2xl border border-slate-200"
             style={{ 
-              pageBreakAfter: index < topStudents.length - 1 ? 'always' : 'auto',
-              backgroundColor: '#fafaf9',
+              pageBreakAfter: 'always',
+              backgroundColor: '#ffffff',
               boxSizing: 'border-box'
             }}
             dir="rtl"
@@ -54,11 +54,14 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
             <div className="relative z-30 w-full px-24 flex flex-col items-center justify-center h-full">
                
                {/* Headers */}
-               <div className="flex flex-col items-center space-y-1 mb-8">
-                 <h1 className="text-2xl font-black tracking-widest text-slate-800">الجمهورية الجزائرية الديمقراطية الشعبية</h1>
-                 <h2 className="text-lg font-bold text-slate-600">وزارة التربية الوطنية</h2>
-                 <div className="w-64 h-px bg-yellow-600 my-4 opacity-50"></div>
-                 <h3 className="text-xl font-bold text-slate-700">{teacherConfig.institution}</h3>
+               <div className="flex flex-col items-center space-y-1 mb-6">
+                 <h1 className="text-xl md:text-2xl font-black tracking-widest text-slate-800">الجمهورية الجزائرية الديمقراطية الشعبية</h1>
+                 <h2 className="text-base md:text-lg font-bold text-slate-600">وزارة التربية الوطنية</h2>
+                 <div className="flex items-center gap-8 text-sm md:text-base font-bold text-slate-700 mt-2">
+                    <p>مديرية التربية لولاية {teacherConfig.province || "........"}</p>
+                    <p>{teacherConfig.institution}</p>
+                 </div>
+                 <div className="w-64 h-0.5 bg-yellow-600 my-4 opacity-30"></div>
                </div>
                
                {/* Main Title */}
@@ -74,24 +77,24 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
                </div>
 
                {/* Appreciation text */}
-               <p className="text-2xl text-slate-700 leading-loose text-center max-w-4xl font-bold mb-8">
-                 تقديراً للجهود المبذولة، والتميز الواضح، يسرّ الأستاذ(ة) <span className="text-3xl font-black text-slate-900 mx-2">{teacherConfig.name}</span>
-                 <br />
-                 أن يمنح هذه الشهادة للتلميذ(ة) النّجيب(ة):
+               <p className="text-xl md:text-2xl text-slate-700 leading-relaxed text-center max-w-4xl font-bold mb-8 px-10">
+                 إلى من أثبت(ت) أن العقل هو المحرك الأول للإبداع ؛ يسرني أنا الأستاذ(ة) <span className="text-2xl md:text-3xl font-black text-slate-900 mx-1">{teacherConfig.name}</span> أن أكافئ التلميذ (ة):
                </p>
 
                {/* Student Name */}
-               <h2 className="text-6xl font-black text-slate-900 py-6 px-16 bg-gradient-to-r from-transparent via-yellow-100 to-transparent mb-8">
+               <h2 className="text-5xl md:text-6xl font-black text-slate-900 py-6 px-16 bg-gradient-to-r from-transparent via-yellow-100 to-transparent mb-8">
                  {student.name}
                </h2>
                
                {/* Achievement Details */}
-               <p className="text-xl text-slate-700 leading-loose max-w-3xl text-center font-bold mb-12">
-                 لحصوله(ا) على نتائج ممتازة في مادة <span className="text-2xl font-black text-emerald-700 mx-1">{teacherConfig.subject}</span>
-                 بمعدل: <span className="inline-block bg-emerald-600 text-white px-6 py-2 rounded-xl text-4xl font-black mx-2" dir="ltr">{student.overallAverage?.toFixed(2)}</span>
-                 <br />
-                 <span className="text-lg opacity-80 mt-2 block">خلال السنة الدراسية: {teacherConfig.academicYear}</span>
+               <p className="text-lg md:text-xl text-slate-700 leading-loose max-w-3xl text-center font-bold mb-8">
+                 لتميزه (ها) في مادة <span className="text-xl md:text-2xl font-black text-emerald-700 mx-1">{teacherConfig.subject}</span> ، متمنياً لك مستقبلاً مشرقاً يليق بذكائك
                </p>
+
+               {/* Quote */}
+               <div className="mb-12 text-center">
+                 <p className="text-2xl md:text-3xl font-black text-emerald-800 tracking-tight">"ثابر.. فالعالم ينتظر بصمتك الخاصة"</p>
+               </div>
 
                {/* Footer Signatures */}
                <div className="flex w-full justify-between items-end px-20 mt-auto">

@@ -131,10 +131,11 @@ export default function App() {
     "report" | "certificates" | null
   >(null);
   const [teacherConfig, setTeacherConfig] = useState<TeacherConfig>({
-    name: "بلحية ياسين",
-    institution: "ثانوية المتفوقين",
-    subject: "الرياضيات",
+    name: "",
+    institution: "",
+    subject: "",
     level: "ثانوي",
+    province: "",
     hasPractical: false,
     academicYear: "2025/2026",
   });
@@ -221,10 +222,14 @@ export default function App() {
           currentUser.uid,
         );
         if (cloudConfig) {
-          setTeacherConfig(cloudConfig);
+          setTeacherConfig(prev => ({ 
+            ...prev, 
+            ...cloudConfig,
+            province: cloudConfig.province || prev.province || "" 
+          }));
           localStorage.setItem(
             "edugrade_teacher_config",
-            JSON.stringify(cloudConfig),
+            JSON.stringify({ ...teacherConfig, ...cloudConfig })
           );
         }
 
@@ -267,7 +272,12 @@ export default function App() {
 
     const savedConfig = localStorage.getItem("edugrade_teacher_config");
     if (savedConfig) {
-      setTeacherConfig(JSON.parse(savedConfig));
+      const parsedConfig = JSON.parse(savedConfig);
+      setTeacherConfig(prev => ({
+        ...prev,
+        ...parsedConfig,
+        province: parsedConfig.province || prev.province || ""
+      }));
     }
 
     return () => unsubscribe();
@@ -301,6 +311,7 @@ export default function App() {
       institution: "",
       subject: "",
       level: "",
+      province: "",
       hasPractical: false,
       academicYear: "",
     });
@@ -454,6 +465,7 @@ export default function App() {
       institution: "",
       subject: "",
       level: "ثانوي",
+      province: "",
       hasPractical: false,
       academicYear: "2025/2026",
     };
@@ -533,6 +545,8 @@ export default function App() {
       setIsUploading(false);
     }
   };
+
+
 
   const loadSampleData = () => {
     const sampleStudents: Student[] = [
@@ -1453,7 +1467,13 @@ export default function App() {
 
               {/* Modal Content - The actual Report */}
               <div className="flex-1 overflow-y-auto bg-slate-100 dark:bg-[#1a1a1a] p-4 sm:p-8 flex flex-col items-center">
-                <div className="bg-white dark:bg-[#050505] shadow-2xl origin-top scale-[0.6] sm:scale-[0.8] md:scale-90 lg:scale-100 transition-all duration-500 mb-20 relative">
+                <div className={cn(
+                  "bg-white shadow-2xl origin-top transition-all duration-500 mb-20 relative",
+                  previewType === 'certificates' 
+                    ? "scale-[0.25] sm:scale-[0.4] md:scale-[0.6] lg:scale-[0.8] xl:scale-100" 
+                    : "scale-[0.6] sm:scale-[0.8] md:scale-90 lg:scale-100",
+                  "dark:bg-[#050505]"
+                )}>
                   <div id="preview-report-wrapper" className="min-h-[1123px]">
                     {previewType === "global_analysis" ? (
                       <PrintableClassesAnalysis
