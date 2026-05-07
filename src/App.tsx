@@ -1467,14 +1467,16 @@ export default function App() {
 
               {/* Modal Content - The actual Report */}
               <div className="flex-1 overflow-y-auto bg-slate-100 dark:bg-[#1a1a1a] p-4 sm:p-8 flex flex-col items-center">
-                <div className={cn(
-                  "bg-white shadow-2xl origin-top transition-all duration-500 mb-20 relative",
-                  previewType === 'certificates' 
-                    ? "scale-[0.25] sm:scale-[0.4] md:scale-[0.6] lg:scale-[0.8] xl:scale-100" 
-                    : "scale-[0.6] sm:scale-[0.8] md:scale-90 lg:scale-100",
-                  "dark:bg-[#050505]"
-                )}>
-                  <div id="preview-report-wrapper" className="min-h-[1123px]">
+                <div 
+                  id="preview-report-wrapper"
+                  className={cn(
+                    "bg-white shadow-2xl origin-top transition-all duration-500 mb-20 relative",
+                    previewType === 'certificates' 
+                      ? "scale-[0.28] sm:scale-[0.45] md:scale-[0.65] lg:scale-[0.80] xl:scale-95 w-[1123px] h-[794px]" 
+                      : "scale-[0.6] sm:scale-[0.8] md:scale-90 lg:scale-100 min-h-[1123px]",
+                    "dark:bg-[#050505]"
+                  )}
+                >
                     {previewType === "global_analysis" ? (
                       <PrintableClassesAnalysis
                         id="preview-classes-analysis-id"
@@ -1507,7 +1509,6 @@ export default function App() {
                     </div>
                   )}
                 </div>
-              </div>
 
               {/* Modal Footer (Mobile) */}
               <div className="md:hidden p-6 bg-white dark:bg-[#050505] border-t border-slate-100 dark:border-[#262626] flex gap-3 shrink-0 z-50">
