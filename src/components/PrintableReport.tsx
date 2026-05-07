@@ -62,23 +62,21 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
 
   const TableColGroups = () => (
     <colgroup>
-      <col style={{ width: '8%' }} />
-      <col style={{ width: '18%' }} />
-      <col style={{ width: '18%' }} />
+      <col style={{ width: '6%' }} />
+      <col style={{ width: teacherConfig.hasPractical ? '28%' : '39%' }} />
       <col style={{ width: '11%' }} />
       {teacherConfig.hasPractical && <col style={{ width: '11%' }} />}
       <col style={{ width: '11%' }} />
       <col style={{ width: '11%' }} />
-      <col style={{ width: '12%' }} />
+      <col style={{ width: '22%' }} />
     </colgroup>
   );
 
   const TableHeader = () => (
     <thead style={{ display: 'table-header-group' }}>
       <tr style={{ backgroundColor: '#e5e7eb' }}>
-         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("rank_short")}</th>
-         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("last_name")}</th>
-         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("first_name")}</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '11px' }}>{t("rank_short")}</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("name_label", "الاسم")}</th>
          <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("evaluation")}</th>
          {teacherConfig.hasPractical && <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("practical_short")}</th>}
          <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("quiz")}</th>
@@ -90,15 +88,11 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
 
   const renderTableRow = (student: Student, index: number) => {
     const mainGrade = (Object.values(student.grades)[0] || {}) as any;
-    const nameParts = student.name.trim().split(/\s+/);
-    const lastName = student.lastName || (nameParts.length > 1 ? nameParts[0] : '');
-    const firstName = student.firstName || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : nameParts[0] || '');
     
     return (
       <tr style={{ borderBottom: '1px solid #000000' }}>
-        <td style={{ padding: '2px', fontWeight: '700', border: '1px solid #000000', fontSize: '11px' }}>{index}</td>
-        <td style={{ padding: '2px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '11px', textAlign: isRTL ? 'right' : 'left' }}>{lastName}</td>
-        <td style={{ padding: '2px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '11px', textAlign: isRTL ? 'right' : 'left' }}>{firstName}</td>
+        <td style={{ padding: '2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px', backgroundColor: '#f9fafb' }}>{index}</td>
+        <td style={{ padding: '4px', fontWeight: '700', border: '1px solid #000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '11px', textAlign: isRTL ? 'right' : 'left' }}>{student.name}</td>
         <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.evaluation ?? '-'}</td>
         {teacherConfig.hasPractical && <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.practical ?? '-'}</td>}
         <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.quiz ?? '-'}</td>
