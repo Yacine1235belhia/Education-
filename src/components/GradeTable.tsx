@@ -44,7 +44,7 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
             key={student.id}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelectStudent(student)}
-            className="flex items-center justify-between p-3 bg-white dark:bg-[#050505] rounded-3xl border border-slate-50 shadow-sm active:bg-slate-50 dark:bg-[#111111] transition-colors"
+            className="flex items-center justify-between p-3 bg-white dark:bg-[#0a0a0a] rounded-3xl border border-slate-50 dark:border-white/5 shadow-sm active:bg-slate-50 dark:active:bg-[#111111] transition-colors"
           >
             {/* Right side: Rank + Avatar + Name */}
             <div className={cn("flex items-center gap-2.5", i18n.language === 'ar' ? "flex-row" : "flex-row")}>

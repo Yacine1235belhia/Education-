@@ -159,30 +159,6 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
                 )}
               </div>
             </div>
-            
-            <div className="space-y-3">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">{t('auto_calc')}</label>
-              <button 
-                onClick={() => {
-                  updateTeacherConfig({ ...teacherConfig, hasPractical: !teacherConfig.hasPractical });
-                }}
-                className={cn(
-                  "w-full px-6 py-4 rounded-[1.5rem] font-black flex items-center justify-between border-2 transition-all group",
-                  teacherConfig.hasPractical ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-slate-50 dark:bg-[#111111] border-slate-100 dark:border-[#262626] text-slate-500 dark:text-[#a3a3a3]"
-                )}
-              >
-                <span>{t('practical_work')}</span>
-                <div className={cn(
-                  "w-12 h-6 rounded-full relative transition-all duration-500",
-                  teacherConfig.hasPractical ? "bg-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "bg-slate-300"
-                )}>
-                  <div className={cn(
-                    "absolute top-1 w-4 h-4 rounded-full bg-white dark:bg-[#050505] transition-all duration-500 shadow-sm",
-                    teacherConfig.hasPractical ? (isRTL ? "right-1" : "left-1") : (isRTL ? "right-7" : "left-7")
-                  )} />
-                </div>
-              </button>
-            </div>
           </div>
           
           <div className="pt-4">

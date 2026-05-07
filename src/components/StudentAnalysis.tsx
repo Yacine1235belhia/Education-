@@ -13,12 +13,12 @@ interface StudentAnalysisProps {
 }
 
 const getAppreciation = (avg: number, t: any) => {
-  if (avg === 0) return { text: t("waiting_calculation", "في انتظار الحساب..."), color: "text-slate-400", bg: "bg-slate-50 dark:bg-[#111111]" };
-  if (avg < 5) return { text: t("very_weak_results", "نتائج ضعيفة جداً، يجب تدارك الموقف فوراً"), color: "text-rose-600", bg: "bg-rose-50" };
-  if (avg < 9.99) return { text: t("insufficient_results", "نتائج غير كافية، بذل مجهود إضافي مطلوب"), color: "text-orange-600", bg: "bg-orange-50" };
-  if (avg < 11.99) return { text: t("acceptable_results", "نتائج مقبولة، يمكن تحسينها"), color: "text-blue-600", bg: "bg-blue-50" };
-  if (avg < 14.99) return { text: t("good_results", "نتائج حسنة"), color: "text-blue-600", bg: "bg-blue-50" };
-  return { text: t("excellent_results", "نتائج ممتازة، واواصل"), color: "text-blue-700", bg: "bg-blue-50" };
+  if (avg === 0) return { text: t("waiting_calculation", "في انتظار الحساب..."), color: "text-slate-400 dark:text-slate-500", bg: "bg-slate-50 dark:bg-slate-900/30" };
+  if (avg < 5) return { text: t("very_weak_results", "نتائج ضعيفة جداً، يجب تدارك الموقف فوراً"), color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-50 dark:bg-rose-900/20" };
+  if (avg < 9.99) return { text: t("insufficient_results", "نتائج غير كافية، بذل مجهود إضافي مطلوب"), color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-50 dark:bg-orange-900/20" };
+  if (avg < 11.99) return { text: t("acceptable_results", "نتائج مقبولة، يمكن تحسينها"), color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" };
+  if (avg < 14.99) return { text: t("good_results", "نتائج حسنة"), color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" };
+  return { text: t("excellent_results", "نتائج ممتازة، واواصل"), color: "text-blue-700 dark:text-blue-300", bg: "bg-blue-50 dark:bg-blue-900/20" };
 };
 
 export const StudentAnalysis = ({ student, onClose, teacherConfig }: StudentAnalysisProps) => {
@@ -44,9 +44,9 @@ export const StudentAnalysis = ({ student, onClose, teacherConfig }: StudentAnal
             </div>
           </div>
           <div className="flex flex-col items-center text-center gap-3">
-            <span className="px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-bold w-fit">{t("student_results", "نتائج التلميذ(ة)")} - {teacherConfig.institution}</span>
+            <span className="px-4 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold w-fit">{t("student_results", "نتائج التلميذ(ة)")} - {teacherConfig.institution}</span>
             <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">{student.name}</h2>
-            <div className={cn("px-4 py-2 rounded-full text-xs font-bold border flex items-center gap-2", appreciation.bg, appreciation.color, appreciation.bg.replace('50', '200'))}>
+            <div className={cn("px-4 py-2 rounded-full text-xs font-bold border flex items-center gap-2", appreciation.bg, appreciation.color, "border-current opacity-80")}>
                {appreciation.text}
             </div>
           </div>

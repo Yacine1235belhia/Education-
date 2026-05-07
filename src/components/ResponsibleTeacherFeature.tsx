@@ -379,13 +379,13 @@ export function ResponsibleTeacherFeature({ teacherConfig }: Props) {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="rounded-xl border bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800">
+              <div className="rounded-xl border bg-indigo-50 dark:bg-indigo-900/40 border-indigo-100 dark:border-indigo-800">
                 <div className="p-4 flex flex-col items-center justify-center text-center">
                   <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 mb-1">{t("overall_average", "المعدل العام")}</span>
                   <span className="text-2xl font-black text-indigo-900 dark:text-indigo-100">{globalAverage}</span>
                 </div>
               </div>
-              <div className="rounded-xl border bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800">
+              <div className="rounded-xl border bg-emerald-50 dark:bg-emerald-900/40 border-emerald-100 dark:border-emerald-800">
                 <div className="p-4 flex flex-col items-center justify-center text-center">
                   <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-1">{t("success_rate", "نسبة النجاح")}</span>
                   <span className="text-2xl font-black text-emerald-900 dark:text-emerald-100">%{globalSuccessRate}</span>

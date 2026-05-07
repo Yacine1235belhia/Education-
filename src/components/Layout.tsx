@@ -107,7 +107,7 @@ export const Layout = ({
 
       {/* Sidebar - Desktop */}
       <aside className={cn(
-        "hidden md:flex flex-col w-72 bg-white/80 backdrop-blur-2xl p-8 sticky top-0 h-screen z-20 shadow-[10px_0_40px_-20px_rgba(0,0,0,0.01)]",
+        "hidden md:flex flex-col w-72 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-2xl p-8 sticky top-0 h-screen z-20 shadow-[10px_0_40px_-20px_rgba(0,0,0,0.01)]",
         isRTL ? "border-l border-slate-100 dark:border-[#262626]" : "border-r border-slate-100 dark:border-[#262626]"
       )}>
         <div className="flex items-center gap-4 mb-14 px-2">
@@ -155,12 +155,14 @@ export const Layout = ({
             active={activeTab === "settings"}
             onClick={() => setActiveTab("settings")}
           />
-          <NavItem
-            icon={Download}
-            label={t("print_reports", "تحميل التقارير")}
-            active={false}
-            onClick={() => onPrintMenuClick?.()}
-          />
+          {activeTab !== "students" && (
+            <NavItem
+              icon={Download}
+              label={t("print_reports", "تحميل التقارير")}
+              active={false}
+              onClick={() => onPrintMenuClick?.()}
+            />
+          )}
         </nav>
 
         <div className="mt-auto space-y-4">
@@ -190,7 +192,7 @@ export const Layout = ({
       {/* Main Content */}
       <main className="flex-1 relative">
         {/* Header Bar */}
-        <header className="hidden md:flex items-center justify-between p-8 bg-white/40 backdrop-blur-xl sticky top-0 z-10 border-b border-slate-200/30">
+        <header className="hidden md:flex items-center justify-between p-8 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl sticky top-0 z-10 border-b border-slate-200/30 dark:border-white/5">
           <div className="relative group">
             <input
               type="text"
@@ -263,7 +265,7 @@ export const Layout = ({
       </main>
 
       {/* Mobile Nav */}
-      <nav className="md:hidden fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-xl border border-slate-100 dark:border-[#262626] px-6 py-4 flex justify-between items-center z-50 rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
+      <nav className="md:hidden fixed bottom-4 left-4 right-4 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-xl border border-slate-100 dark:border-white/10 px-6 py-4 flex justify-between items-center z-50 rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
         <button
           onClick={() => setActiveTab("dashboard")}
           className={cn(
@@ -293,12 +295,14 @@ export const Layout = ({
         >
           <Plus className="w-6 h-6" />
         </button>
-        <button
-          onClick={() => onPrintMenuClick?.()}
-          className="p-2 transition-transform active:scale-90 text-slate-300 hover:text-emerald-600"
-        >
-          <Download className="w-6 h-6" />
-        </button>
+        {activeTab !== "students" && (
+          <button
+            onClick={() => onPrintMenuClick?.()}
+            className="p-2 transition-transform active:scale-90 text-slate-300 hover:text-emerald-600"
+          >
+            <Download className="w-6 h-6" />
+          </button>
+        )}
         <button
           onClick={() => setActiveTab("responsible_teacher")}
           className={cn(

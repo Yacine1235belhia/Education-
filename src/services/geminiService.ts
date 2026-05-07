@@ -37,17 +37,22 @@ export class GeminiService {
     }
   }
 
-  async analyzeStudentPerformance(student: Student) {
+  async analyzeStudentPerformance(student: Student, teacherConfig: any) {
     if (!process.env.GEMINI_API_KEY) return "يرجى ضبط مفتاح API للحصول على تحليل ذكي.";
 
     const gradesStr = Object.entries(student.grades)
       .map(([subject, g]) => {
-        return `${subject}: التقويم ${g.evaluation}, التطبيق/الشفوي ${g.practical || 0}, الفرض ${g.quiz}, الاختبار ${g.exam} -> المعدل: ${g.average}`;
+        const hasPr = teacherConfig?.hasPractical;
+        return `${subject}: التقويم ${g.evaluation}${hasPr ? `, الأعمال التطبيقية ${g.practical || 0}` : ""}, الفرض ${g.quiz}, الاختبار ${g.exam} -> المعدل: ${g.average}`;
       })
       .join('\n');
 
     try {
-      const prompt = `أنت مساعد تربوي ذكي للأستاذ "بلحية ياسين"، خبير في النظام التعليمي الجزائري. 
+      const formulaDesc = teacherConfig?.hasPractical 
+        ? "(التقويم + أعمال تطبيقية + الفرض + الاختبار × 2) / 5"
+        : "(التقويم + الفرض + الاختبار × 2) / 4";
+
+      const prompt = `أنت مساعد تربوي ذكي للأستاذ "${teacherConfig?.name || 'بلحية ياسين'}"، خبير في النظام التعليمي الجزائري. 
       
       معلومات التلميذ: ${student.name}
       المعدل العام المسجل: ${student.overallAverage?.toFixed(2)}/20
@@ -57,7 +62,7 @@ export class GeminiService {
       
       المهمة المطلوبة:
       1. حلل العلاقة بين النقاط (مثلاً: إذا كانت نقطة الاختبار ضعيفة مقارنة بنقاط التقويم والفرض، نبه لضرورة التركيز في الامتحانات النهائية).
-      2. الصيغة المعتمدة للحساب هي: معدل المادة = (التقويم + أعمال تطبيقية + معدل الفروض + الاختبار × 2) / 5.
+      2. الصيغة المعتمدة للحساب في هذا الملف هي: ${formulaDesc}.
       3. قدم تقديرات دقيقة (ممتاز، حسن، متوسط، ضعيف) بناءً على المعدل المسجل.
       4. وجه نصائح بيداغوجية عملية للأستاذ بلحية ياسين حول كيفية مساعدة هذا التلميذ في تحسين مستواه.
       

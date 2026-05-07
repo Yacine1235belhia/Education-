@@ -71,9 +71,9 @@ export const Login = ({ onLogin }: LoginProps) => {
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="max-w-md w-full bg-white/90 backdrop-blur-xl rounded-[3.5rem] shadow-[0_40px_100px_-30px_rgba(16,185,129,0.15)] overflow-hidden border border-white/50 relative z-10"
+        className="max-w-md w-full bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-xl rounded-[3.5rem] shadow-[0_40px_100px_-30px_rgba(16,185,129,0.15)] overflow-hidden border border-white/50 dark:border-white/10 relative z-10"
       >
-        <div className="bg-slate-900 p-12 text-center text-white relative">
+        <div className="bg-slate-900 dark:bg-black p-12 text-center text-white relative">
           <div className="absolute top-0 right-0 p-4 opacity-5">
             <GraduationCap size={160} />
           </div>

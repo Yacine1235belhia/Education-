@@ -14,7 +14,7 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
 
   return (
     <div className="w-[1123px] mx-auto"> 
-      <div ref={ref} id="certificates-to-download" className="w-full bg-white dark:bg-[#050505] relative">
+      <div ref={ref} id="certificates-to-download" className="w-full bg-white relative">
         {topStudents.map((student, index) => (
           <div 
             key={student.id} 
@@ -55,10 +55,10 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
                
                {/* Headers */}
                <div className="flex flex-col items-center space-y-1 mb-8">
-                 <h1 className="text-2xl font-black tracking-widest text-slate-800 dark:text-white">الجمهورية الجزائرية الديمقراطية الشعبية</h1>
-                 <h2 className="text-lg font-bold text-slate-600 dark:text-[#d4d4d4]">وزارة التربية الوطنية</h2>
+                 <h1 className="text-2xl font-black tracking-widest text-slate-800">الجمهورية الجزائرية الديمقراطية الشعبية</h1>
+                 <h2 className="text-lg font-bold text-slate-600">وزارة التربية الوطنية</h2>
                  <div className="w-64 h-px bg-yellow-600 my-4 opacity-50"></div>
-                 <h3 className="text-xl font-bold text-slate-700 dark:text-[#e5e5e5]">{teacherConfig.institution}</h3>
+                 <h3 className="text-xl font-bold text-slate-700">{teacherConfig.institution}</h3>
                </div>
                
                {/* Main Title */}
@@ -74,19 +74,19 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
                </div>
 
                {/* Appreciation text */}
-               <p className="text-2xl text-slate-700 dark:text-[#e5e5e5] leading-loose text-center max-w-4xl font-bold mb-8">
-                 تقديراً للجهود المبذولة، والتميز الواضح، يسرّ الأستاذ(ة) <span className="text-3xl font-black text-slate-900 dark:text-white mx-2">{teacherConfig.name}</span>
+               <p className="text-2xl text-slate-700 leading-loose text-center max-w-4xl font-bold mb-8">
+                 تقديراً للجهود المبذولة، والتميز الواضح، يسرّ الأستاذ(ة) <span className="text-3xl font-black text-slate-900 mx-2">{teacherConfig.name}</span>
                  <br />
                  أن يمنح هذه الشهادة للتلميذ(ة) النّجيب(ة):
                </p>
 
                {/* Student Name */}
-               <h2 className="text-6xl font-black text-slate-900 dark:text-white py-6 px-16 bg-gradient-to-r from-transparent via-yellow-100 to-transparent mb-8">
+               <h2 className="text-6xl font-black text-slate-900 py-6 px-16 bg-gradient-to-r from-transparent via-yellow-100 to-transparent mb-8">
                  {student.name}
                </h2>
                
                {/* Achievement Details */}
-               <p className="text-xl text-slate-700 dark:text-[#e5e5e5] leading-loose max-w-3xl text-center font-bold mb-12">
+               <p className="text-xl text-slate-700 leading-loose max-w-3xl text-center font-bold mb-12">
                  لحصوله(ا) على نتائج ممتازة في مادة <span className="text-2xl font-black text-emerald-700 mx-1">{teacherConfig.subject}</span>
                  بمعدل: <span className="inline-block bg-emerald-600 text-white px-6 py-2 rounded-xl text-4xl font-black mx-2" dir="ltr">{student.overallAverage?.toFixed(2)}</span>
                  <br />
@@ -96,18 +96,18 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
                {/* Footer Signatures */}
                <div className="flex w-full justify-between items-end px-20 mt-auto">
                   <div className="text-center w-64 pt-6 border-t-2 border-slate-300">
-                    <p className="text-xl font-bold text-slate-800 dark:text-white">حرر بتاريخ</p>
-                    <p className="text-xl font-bold text-slate-600 dark:text-[#d4d4d4] mt-2" dir="ltr">{new Date().toLocaleDateString('ar-DZ')}</p>
+                    <p className="text-xl font-bold text-slate-800">حرر بتاريخ</p>
+                    <p className="text-xl font-bold text-slate-600 mt-2" dir="ltr">{new Date().toLocaleDateString('ar-DZ')}</p>
                   </div>
                   
                   {/* Decorative Seal Placeholder */}
                   <div className="w-24 h-24 rounded-full border-4 border-yellow-500 bg-yellow-50 flex items-center justify-center opacity-80 rotate-12">
                      <span className="text-yellow-600 font-bold text-sm text-center">تفوق<br/>و<br/>نجاح</span>
                   </div>
-
+ 
                   <div className="text-center w-64 pt-6 border-t-2 border-slate-300">
-                    <p className="text-xl font-bold text-slate-800 dark:text-white">توقيع الأستاذ(ة)</p>
-                    <p className="text-2xl font-black text-slate-900 dark:text-white font-serif italic mt-2">{teacherConfig.name}</p>
+                    <p className="text-xl font-bold text-slate-800">توقيع الأستاذ(ة)</p>
+                    <p className="text-2xl font-black text-slate-900 font-serif italic mt-2">{teacherConfig.name}</p>
                   </div>
                </div>
             </div>
@@ -115,7 +115,7 @@ export const PrintableCertificates = forwardRef<HTMLDivElement, PrintableCertifi
         ))}
 
         {topStudents.length === 0 && (
-          <div className="pdf-page w-[1123px] h-[794px] flex items-center justify-center p-12 text-center text-4xl font-bold text-slate-500 dark:text-[#a3a3a3]">
+          <div className="pdf-page w-[1123px] h-[794px] flex items-center justify-center p-12 text-center text-4xl font-bold text-slate-500">
             لا يوجد تلاميذ بمعدل ممتاز (15 فما فوق) في هذه القائمة.
           </div>
         )}

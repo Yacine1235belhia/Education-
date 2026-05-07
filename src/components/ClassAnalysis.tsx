@@ -80,7 +80,7 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
   return (
     <div className="space-y-8 mt-12 animate-in fade-in duration-700">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+        <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
           <TrendingUp className="w-5 h-5" />
         </div>
         <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{t("data_and_variance_analysis", "تحليل البيانات والفروقات")}</h2>
@@ -113,7 +113,7 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" className="dark:opacity-10" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} domain={[0, 20]} />
                 <Tooltip content={<CustomTooltip t={t} />} cursor={{fill: '#f8fafc'}} />

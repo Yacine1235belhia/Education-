@@ -67,7 +67,7 @@ export const PrintableClassesAnalysis = forwardRef<HTMLDivElement, PrintableClas
 
   return (
     <div className="w-full">
-      <div ref={ref} id={id} className="w-[800px] font-sans mx-auto pdf-page bg-white dark:bg-[#050505] p-10 relative" dir="rtl" style={{ color: '#000000', minHeight: '1120px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}>
+      <div ref={ref} id={id} className="w-[800px] font-sans mx-auto pdf-page bg-white p-10 relative" dir="rtl" style={{ color: '#000000', minHeight: '1120px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}>
         
         {/* Main Header */}
         <div style={{ backgroundColor: '#f3f4f6', padding: '12px', textAlign: 'center', marginBottom: '20px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>

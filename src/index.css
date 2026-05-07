@@ -66,15 +66,22 @@
 }
 
 .glass-card {
-  @apply bg-white border border-slate-100 shadow-[0_8px_40px_rgb(0,0,0,0.02)];
+  @apply bg-white dark:bg-[#0a0a0a] border border-slate-100 dark:border-white/5 shadow-[0_8px_40px_rgb(0,0,0,0.02)];
 }
 
 .mesh-bg {
-  background-color: #ffffff;
+  @apply bg-white dark:bg-[#050505];
   background-image:
     radial-gradient(at 0% 0%, hsla(142, 60%, 96%, 1) 0, transparent 50%),
     radial-gradient(at 50% 0%, hsla(217, 30%, 98%, 1) 0, transparent 50%),
     radial-gradient(at 100% 0%, hsla(142, 60%, 96%, 1) 0, transparent 50%);
+}
+
+.dark .mesh-bg {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(5, 5, 5, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(6, 78, 59, 0.05) 0, transparent 50%);
 }
 
 .dots-bg {
@@ -84,11 +91,23 @@
   background-size: 40px 40px;
 }
 
+.dark .dots-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
 .paper-pattern {
   background-image:
     linear-gradient(rgba(226, 232, 240, 0.3) 1px, transparent 1px),
     linear-gradient(90deg, rgba(226, 232, 240, 0.3) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+.dark .paper-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 
 .active-nav-item {

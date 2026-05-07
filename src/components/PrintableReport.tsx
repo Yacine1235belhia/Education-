@@ -160,7 +160,7 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
           return (
             <div 
               key={`page-${index}`} 
-              className="pdf-page bg-white dark:bg-[#050505] p-10 relative" 
+              className="pdf-page bg-white p-10 relative" 
               style={{ minHeight: '1120px', marginBottom: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
             >
               {isFirstPage && (
@@ -209,7 +209,7 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
 
         {/* Extra page for stats if it didn't fit */}
         {statsNeedNewPage && (
-          <div className="pdf-page bg-white dark:bg-[#050505] p-10 relative" style={{ minHeight: '1120px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}>
+          <div className="pdf-page bg-white p-10 relative" style={{ minHeight: '1120px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}>
             <AnalysisSection />
             <div style={{ position: 'absolute', bottom: '20px', left: '0', right: '0', textAlign: 'center', fontSize: '12px', color: '#6b7280' }}>
               {t("page")} {studentChunks.length + 1}

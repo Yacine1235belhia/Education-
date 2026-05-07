@@ -81,8 +81,8 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: any) => {
             className={cn(
               "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter font-mono",
               trend > 0
-                ? "bg-emerald-50 text-emerald-600"
-                : "bg-rose-50 text-rose-600",
+                ? "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+                : "bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400",
             )}
           >
             {trend > 0 ? (
@@ -1050,18 +1050,6 @@ export default function App() {
                 )}
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                <button
-                  onClick={() =>
-                    excelService.exportStudentsToExcel(
-                      filteredStudents,
-                      selectedClass,
-                    )
-                  }
-                  className="px-6 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl font-black text-emerald-600 hover:bg-emerald-100 transition-all flex justify-center items-center gap-2 w-full sm:w-auto"
-                >
-                  <Download className="w-5 h-5 text-emerald-500" />
-                  <span className="hidden sm:inline">{t("download_pdf", "تحميل مستند PDF")}</span>
-                </button>
               </div>
             </header>
 
@@ -1083,96 +1071,12 @@ export default function App() {
               </p>
             </div>
             <div className="flex flex-col gap-8">
-              <ExcelImporter onDataLoaded={handleDataLoaded} isLoading={isUploading} />
-
-              <div className="bg-amber-50 rounded-[2.5rem] p-8 md:p-12 border-2 border-amber-100 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl shadow-amber-100/50">
-                <div className="text-center md:text-right space-y-3">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-200 mb-2">
-                    {t("settings_title", "الإعدادات والتحكم")}
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-                    {t("practical_work_system", "نظام الأعمال التطبيقية")}
-                  </h3>
-                  <p className="text-slate-500 dark:text-[#a3a3a3] font-bold max-w-xl">
-                    {t("practical_work_desc", "عند تفعيل هذا الخيار، يتم إضافة خانة 'أعمال تطبيقية' وحساب المعدل كالتالي: (تقويم + أعمال تطبيقية + فرض + اختبار×2) / 5.")}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => {
-                    const newConfig = {
-                      ...teacherConfig,
-                      hasPractical: !teacherConfig.hasPractical,
-                    };
-                    updateTeacherConfig(newConfig);
-
-                    const updatedStudents = students.map((student) => {
-                      const updatedGrades = { ...student.grades };
-                      Object.keys(updatedGrades).forEach((subject) => {
-                        const grade = updatedGrades[subject];
-                        const ev = (grade as any).evaluation ?? 0;
-                        const pr = (grade as any).practical ?? 0;
-                        const qz = (grade as any).quiz ?? 0;
-                        const ex = (grade as any).exam ?? 0;
-
-                        let avg = newConfig.hasPractical
-                          ? (ev + pr + qz + ex * 2) / 5
-                          : (ev + qz + ex * 2) / 4;
-
-                        updatedGrades[subject] = {
-                          ...grade,
-                          average: Number(avg.toFixed(2)),
-                        };
-                      });
-
-                      const allGrades = Object.values(updatedGrades) as {
-                        average?: number;
-                      }[];
-                      const sum = allGrades.reduce(
-                        (a, b: { average?: number }) => a + (b.average || 0),
-                        0,
-                      );
-                      const overallAverage =
-                        allGrades.length > 0
-                          ? Number((sum / allGrades.length).toFixed(2))
-                          : 0;
-
-                      return {
-                        ...student,
-                        grades: updatedGrades,
-                        overallAverage,
-                      };
-                    });
-                    setStudents(updatedStudents);
-                    localStorage.setItem(
-                      "edugrade_students",
-                      JSON.stringify(updatedStudents),
-                    );
-                  }}
-                  className={cn(
-                    "px-8 py-5 rounded-2xl font-black text-lg transition-all border-2 active:scale-95 flex items-center gap-3 shrink-0",
-                    teacherConfig.hasPractical
-                      ? "bg-amber-500 border-amber-400 text-white shadow-lg shadow-amber-200"
-                      : "bg-white dark:bg-[#050505] border-slate-200 dark:border-[#404040] text-slate-400",
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
-                      teacherConfig.hasPractical
-                        ? "bg-white/20 text-white rotate-12"
-                        : "bg-slate-100 dark:bg-[#1a1a1a] text-slate-400",
-                    )}
-                  >
-                    <Plus className="w-5 h-5" />
-                  </div>
-                  <span>
-                    {teacherConfig.hasPractical
-                      ? t("disable_practical_work", "إلغاء الأعمال التطبيقية")
-                      : t("enable_practical_work", "تفعيل الأعمال التطبيقية")}
-                  </span>
-                </button>
-              </div>
+              <ExcelImporter 
+                onDataLoaded={handleDataLoaded} 
+                isLoading={isUploading} 
+                teacherConfig={teacherConfig}
+                updateTeacherConfig={updateTeacherConfig}
+              />
             </div>
           </div>
         )}
