@@ -49,58 +49,62 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import { onSnapshot, collection, getDocs, deleteDoc } from "firebase/firestore";
 import { storageService as firebaseStorage } from "./services/storageService";
 
-const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
-  <motion.div
-    whileHover={{ y: -5, scale: 1.02 }}
-    className="glass-card p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] relative overflow-hidden group transition-all duration-500 border border-slate-100 dark:border-[#262626]"
-  >
-    <div className="flex justify-between items-start relative z-10">
-      <div className="space-y-2 md:space-y-4">
-        <p className="text-slate-400 font-black text-[9px] md:text-[10px] uppercase tracking-widest">
-          {title}
-        </p>
-        <h3 className="text-4xl md:text-6xl font-black text-slate-800 dark:text-white tracking-tighter font-mono leading-none">
-          {value}
-        </h3>
-      </div>
-      <div
-        className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-3xl flex items-center justify-center text-white shadow-2xl transition-all duration-500 group-hover:rotate-6"
-        style={{
-          backgroundColor: color,
-          boxShadow: `0 20px 40px -10px ${color}44`,
-        }}
-      >
-        <Icon className="w-6 h-6 md:w-8 md:h-8" />
-      </div>
-    </div>
-    {trend && (
-      <div className="mt-8 flex items-center gap-3 relative z-10">
-        <div
-          className={cn(
-            "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter font-mono",
-            trend > 0
-              ? "bg-emerald-50 text-emerald-600"
-              : "bg-rose-50 text-rose-600",
-          )}
-        >
-          {trend > 0 ? (
-            <TrendingUp className="w-3 h-3" />
-          ) : (
-            <TrendingDown className="w-3 h-3" />
-          )}
-          <span>%{Math.abs(trend)}</span>
+const StatCard = ({ title, value, icon: Icon, color, trend }: any) => {
+  const { t, i18n } = useTranslation();
+  return (
+    <motion.div
+      whileHover={{ y: -5, scale: 1.02 }}
+      className="glass-card p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] relative overflow-hidden group transition-all duration-500 border border-slate-100 dark:border-[#262626]"
+    >
+      <div className="flex justify-between items-start relative z-10">
+        <div className="space-y-2 md:space-y-4">
+          <p className="text-slate-400 font-black text-[9px] md:text-[10px] uppercase tracking-widest">
+            {title}
+          </p>
+          <h3 className="text-4xl md:text-6xl font-black text-slate-800 dark:text-white tracking-tighter font-mono leading-none">
+            {value}
+          </h3>
         </div>
-        <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest opacity-60">
-          مقارنة بالفصل الماضي
-        </span>
+        <div
+          className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-3xl flex items-center justify-center text-white shadow-2xl transition-all duration-500 group-hover:rotate-6"
+          style={{
+            backgroundColor: color,
+            boxShadow: `0 20px 40px -10px ${color}44`,
+          }}
+        >
+          <Icon className="w-6 h-6 md:w-8 md:h-8" />
+        </div>
       </div>
-    )}
-    <Icon className="absolute -bottom-10 -left-10 w-48 h-48 text-slate-900/[0.02] group-hover:scale-110 group-hover:text-slate-900/[0.05] transition-all duration-700 pointer-events-none" />
-  </motion.div>
-);
+      {trend && (
+        <div className="mt-8 flex items-center gap-3 relative z-10">
+          <div
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter font-mono",
+              trend > 0
+                ? "bg-emerald-50 text-emerald-600"
+                : "bg-rose-50 text-rose-600",
+            )}
+          >
+            {trend > 0 ? (
+              <TrendingUp className="w-3 h-3" />
+            ) : (
+              <TrendingDown className="w-3 h-3" />
+            )}
+            <span>%{Math.abs(trend)}</span>
+          </div>
+          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest opacity-60">
+            {t("compare_last_term")}
+          </span>
+        </div>
+      )}
+      <Icon className={cn("absolute -bottom-10 w-48 h-48 text-slate-900/[0.02] group-hover:scale-110 group-hover:text-slate-900/[0.05] transition-all duration-700 pointer-events-none", i18n.language === 'ar' ? "-left-10" : "-right-10")} />
+    </motion.div>
+  );
+};
 
 export default function App() {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   
   useEffect(() => {
     document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
@@ -180,13 +184,13 @@ export default function App() {
       let elementId = "";
 
       if (previewType === "global_analysis") {
-        filename = `التحليل_الاحصائي_لكل_الاقسام.pdf`;
+        filename = t("analysis_filename");
         elementId = "preview-classes-analysis-id";
       } else if (previewType === "certificates") {
-        filename = `شهادات_تقدير.pdf`;
+        filename = t("certificates_filename");
         elementId = "certificates-to-download";
       } else {
-        filename = `تقرير_نقاط_${selectedClass || "القسم"}.pdf`;
+        filename = t("report_filename", { name: selectedClass || t("section_label") });
         elementId = "preview-report-id";
       }
 
@@ -281,16 +285,76 @@ export default function App() {
     }
   };
 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
 
   const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const clearAllData = async () => {
+    // Clear state
+    setStudents([]);
+    setSelectedClass("");
+    setTeacherConfig({
+      name: "",
+      institution: "",
+      subject: "",
+      level: "",
+      hasPractical: false,
+      academicYear: "",
+    });
+    
+    // Clear local storage
+    localStorage.removeItem("edugrade_students");
+    localStorage.removeItem("edugrade_teacher_config");
+    localStorage.removeItem("edugrade_responsible_students");
+    localStorage.removeItem("edugrade_responsible_config");
+    localStorage.removeItem("edugrade_theme_mode");
+    localStorage.removeItem("edugrade_theme");
+    sessionStorage.removeItem("edugrade_auth");
+    
+    // Clear cookies if any
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    // Clear Firebase if applicable
+    if (user) {
+      try {
+        const studentRef = collection(db, `institutions/${user.uid}/students`);
+        const studentSnap = await getDocs(studentRef);
+        await Promise.all(studentSnap.docs.map(doc => deleteDoc(doc.ref)));
+
+        const configRef = collection(db, `institutions/${user.uid}/config`);
+        const configSnap = await getDocs(configRef);
+        await Promise.all(configSnap.docs.map(doc => deleteDoc(doc.ref)));
+      } catch (err) {
+        console.error("Error clearing Firebase data:", err);
+      }
+    }
+  };
+
+  const confirmLogout = async () => {
+    await clearAllData();
+    setShowLogoutConfirm(false);
     setShowRatingModal(true);
   };
 
-  const handleLogoutConfirm = () => {
+  const finalizeLogout = async () => {
     setIsLoggedIn(false);
     sessionStorage.removeItem("edugrade_auth");
     setShowRatingModal(false);
+    try {
+      const { signOut } = await import("firebase/auth");
+      await signOut(auth);
+    } catch (e) {
+      console.error("Error signing out:", e);
+    }
+    // Force reload to clear all states and start fresh
+    window.location.reload();
   };
 
   const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -572,12 +636,12 @@ export default function App() {
   };
 
   const classes = Array.from(
-    new Set(students.map((s) => s.className || "غير مصنف")),
+    new Set(students.map((s) => s.className || t("not_classified", "غير مصنف"))),
   );
   const filteredStudents = (
     selectedClass === "ALL" || !selectedClass
       ? [...students]
-      : students.filter((s) => (s.className || "غير مصنف") === selectedClass)
+      : students.filter((s) => (s.className || t("not_classified", "غير مصنف")) === selectedClass)
   ).sort((a, b) => (b.overallAverage || 0) - (a.overallAverage || 0));
 
   const classAverage =
@@ -621,10 +685,10 @@ export default function App() {
             <header className="flex flex-col items-center gap-10 text-center">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-4xl md:text-7xl font-black text-slate-800 dark:text-white tracking-tighter leading-tight md:leading-[0.9] font-display">
-                  منصة الأستاذ
+                  {t("app_title", "منصة الأستاذ بلحية ياسين")}
                 </h1>
                 <p className="text-lg md:text-xl font-bold text-slate-400 leading-relaxed max-w-xl mx-auto">
-                  لوحة التحكم والتحليل الإحصائي للنتائج التعليمية
+                  {t("platform_desc", "المنصة الشاملة لإدارة وتحليل وتقييم نتائج التلاميذ بكل سهولة واحترافية.")}
                 </p>
               </div>
 
@@ -634,17 +698,20 @@ export default function App() {
                     <select
                       value={selectedClass}
                       onChange={(e) => setSelectedClass(e.target.value)}
-                      className="w-full bg-white dark:bg-[#050505] border border-slate-200 dark:border-[#404040] px-8 py-5 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 appearance-none min-w-[200px] shadow-sm cursor-pointer text-center md:text-right"
+                      className={cn(
+                        "w-full bg-white dark:bg-[#050505] border border-slate-200 dark:border-[#404040] px-8 py-5 md:py-6 rounded-[1.5rem] md:rounded-[2rem] font-black text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-4 focus:ring-emerald-500/10 appearance-none min-w-[200px] shadow-sm cursor-pointer",
+                        isRTL ? "text-right" : "text-left"
+                      )}
                     >
-                      <option value="ALL">جميع الأقسام</option>
+                      <option value="ALL">{t("all_classes", "جميع الأقسام")}</option>
                       {classes.map((cls) => (
                         <option key={cls} value={cls}>
                           {cls}
                         </option>
                       ))}
                     </select>
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                      <ChevronRight className={cn("w-5 h-5", i18n.language === 'ar' ? "rotate-90" : "rotate-0")} />
+                    <div className={cn("absolute top-1/2 -translate-y-1/2 pointer-events-none text-slate-400", isRTL ? "left-6" : "right-6")}>
+                      <ChevronRight className={cn("w-5 h-5", isRTL ? "rotate-90" : "rotate-0")} />
                     </div>
                   </div>
                 )}
@@ -656,7 +723,7 @@ export default function App() {
                   <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
                     {isUploading ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
                   </div>
-                  <span>{isUploading ? "جاري المعالجة..." : "رفع كشف جديد"}</span>
+                  <span>{isUploading ? t("processing_report", "جاري معالجة التقرير...") : t("upload_students_data", "رفع بيانات التلاميذ")}</span>
                 </button>
 
                 {students.length > 0 && (
@@ -671,25 +738,25 @@ export default function App() {
                         className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 rounded-2xl font-bold text-sm hover:bg-rose-100 dark:hover:bg-rose-950/40 transition-all group"
                       >
                         <Trash2 className="w-4 h-4 group-hover:shake" />
-                        <span>مسح كافة البيانات الحالية</span>
+                        <span>{t("cancel_process", "إلغاء العملية")}</span>
                       </button>
                     ) : (
                       <div className="bg-rose-50 dark:bg-rose-950/30 rounded-2xl p-4 border border-rose-100 dark:border-rose-900/50 space-y-3">
                         <p className="font-black text-rose-600 dark:text-rose-400 text-xs text-center">
-                          هل أنت متأكد من حذف جميع البيانات؟ (لا يمكن التراجع)
+                          {t("review_before_calculation", "يرجى المراجعة قبل الحساب النهائي")}
                         </p>
                         <div className="flex gap-2">
                           <button
                             onClick={confirmClearData}
                             className="flex-1 py-2 bg-rose-600 text-white rounded-xl font-black text-xs hover:bg-rose-700 transition-all"
                           >
-                            تأكيد الحذف
+                            {t("confirm_and_import", "تأكيد واستيراد")}
                           </button>
                           <button
                             onClick={() => setShowClearConfirm(false)}
                             className="flex-1 py-2 bg-white dark:bg-[#050505] text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-xl font-black text-xs"
                           >
-                            إلغاء
+                            {t("cancel_process", "إلغاء العملية")}
                           </button>
                         </div>
                       </div>
@@ -703,27 +770,27 @@ export default function App() {
               <div className="space-y-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 px-2 md:px-0">
                   <StatCard
-                    title="إجمالي التلاميذ (القسم)"
+                    title={t("all_classes", "جميع الأقسام")}
                     value={filteredStudents.length}
                     icon={Users}
                     color="#10b981"
                   />
                   <StatCard
-                    title="المعدل العام (القسم)"
+                    title={t("overall_average", "المعدل العام")}
                     value={classAverage.toFixed(2)}
                     icon={GraduationCap}
                     color="#059669"
                     trend={2.4}
                   />
                   <StatCard
-                    title="نسبة النجاح"
+                    title={t("success_rate", "نسبة النجاح")}
                     value={`${successRate.toFixed(1)}%`}
                     icon={TrendingUp}
                     color="#34d399"
                     trend={12}
                   />
                   <StatCard
-                    title="فوق الـ 15"
+                    title={t("excellent_range", "ممتاز (-15)")}
                     value={
                       filteredStudents.filter(
                         (s) => (s.overallAverage || 0) >= 15,
@@ -740,10 +807,10 @@ export default function App() {
                       <div className="flex items-center gap-3">
                         <div className="w-1.5 h-6 md:h-10 bg-emerald-600 rounded-full shrink-0" />
                         <h2 className="text-xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight font-display leading-tight text-center sm:text-right break-words max-w-full">
-                          نتائج{" "}
+                          {t("student_results", "نتائج التلميذ(ة)")}{" "}
                           <span className="text-emerald-600">
                             {selectedClass === "ALL"
-                              ? "جميع الأقسام"
+                              ? t("all_classes", "جميع الأقسام")
                               : selectedClass}
                           </span>
                         </h2>
@@ -752,8 +819,8 @@ export default function App() {
                         onClick={() => setActiveTab("students")}
                         className="px-4 md:px-6 py-2.5 md:py-3 bg-emerald-50 text-emerald-600 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all shadow-sm border border-emerald-100 flex items-center gap-2 shrink-0"
                       >
-                        <span>مشاهدة القائمة</span>
-                        <ChevronRight className="w-4 h-4 rotate-180" />
+                        <span>{t("show_more", "عرض المزيد")}</span>
+                        <ChevronRight className={cn("w-4 h-4", i18n.language === 'ar' ? "rotate-180" : "rotate-0")} />
                       </button>
                     </div>
                     <GradeTable
@@ -766,7 +833,7 @@ export default function App() {
                     <div className="flex items-center gap-3 md:gap-4 px-4 h-auto md:h-10 justify-center sm:justify-start">
                       <div className="w-1.5 h-6 md:h-10 bg-rose-500 rounded-full" />
                       <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tighter font-display leading-none">
-                        تنبيهات المتابعة
+                        {t("status_prediction", "توقعات الحالة")}
                       </h2>
                     </div>
                     <div className="glass-card p-1 rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-rose-100/30 overflow-hidden">
@@ -785,15 +852,15 @@ export default function App() {
                                   {s.overallAverage?.toFixed(1)}
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-black text-slate-800 dark:text-white text-sm md:text-lg tracking-tight group-hover:text-emerald-600 transition-colors uppercase truncate">
+                                  <p className={cn("font-black text-slate-800 dark:text-white text-sm md:text-lg tracking-tight group-hover:text-emerald-600 transition-colors uppercase truncate", isRTL ? "text-right" : "text-left")}>
                                     {s.name}
                                   </p>
                                   <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                                    يحتاج لدعم إضافي
+                                    {t("insufficient_results", "نتائج غير كافية، بذل مجهود إضافي مطلوب")}
                                   </p>
                                 </div>
                               </div>
-                              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all shrink-0" />
+                              <ChevronRight className={cn("w-4 h-4 md:w-5 md:h-5 text-slate-300 group-hover:text-emerald-600 transition-all shrink-0", i18n.language === 'ar' ? "group-hover:translate-x-1" : "group-hover:-translate-x-1 rotate-180")} />
                             </div>
                           ))}
                         {filteredStudents.filter(
@@ -804,14 +871,14 @@ export default function App() {
                               <Sparkles className="w-10 h-10" />
                             </div>
                             <p className="font-black text-emerald-600 text-lg">
-                              أخبار رائعة! جميع تلاميذك ناجحون.
+                              {t("excellent_results", "نتائج ممتازة، واواصل")}
                             </p>
                           </div>
                         )}
                       </div>
                       <div className="bg-slate-50/50 p-6 border-t border-slate-100 dark:border-[#262626] text-center">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                          تحديثات قائمة المتابعة تتم تلقائياً
+                          {t("offline_works", "(يعمل بدون إنترنت)")}
                         </p>
                       </div>
                     </div>
@@ -829,17 +896,16 @@ export default function App() {
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
                       <div className="text-center md:text-right space-y-4">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-emerald-400">
-                          التصدير والطباعة
+                          {t("print_reports", "طباعة تقارير شاملة")}
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
-                          جاهز لاستخراج <br />{" "}
+                          {t("preview_final_report", "معاينة التقرير النهائي")} <br />{" "}
                           <span className="text-emerald-400">
-                            التقرير النهائي؟
+                            {t("ready_for_pdf", "جاهز لاستخراج التقرير")}
                           </span>
                         </h2>
                         <p className="text-slate-400 font-bold text-lg max-w-md">
-                          يمكنك معاينة التقرير بالكامل والتأكد من كافة البيانات
-                          قبل تحميله بصيغة PDF.
+                          {t("review_data_before_pdf", "راجع البيانات قبل استخراج ملف PDF")}
                         </p>
                       </div>
 
@@ -849,7 +915,7 @@ export default function App() {
                           className="w-full md:w-auto px-8 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-[1.2rem] font-bold text-base transition-all active:scale-95 flex items-center justify-center gap-3"
                         >
                           <TrendingUp className="w-5 h-5" />
-                          <span>تحميل تحلیل الأقسام</span>
+                          <span>{t("student_analysis", "تحليلات الأقسام")}</span>
                         </button>
 
                         <button
@@ -857,7 +923,7 @@ export default function App() {
                           className="w-full md:w-auto px-12 py-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[1.8rem] font-black text-xl transition-all shadow-2xl shadow-emerald-900/40 active:scale-95 flex items-center justify-center gap-4 hover:translate-y-[-4px]"
                         >
                           <FileText className="w-7 h-7" />
-                          <span>معاينة وتحميل كشف القسم</span>
+                          <span>{t("preview_and_download", "معاينة وتحميل")}</span>
                         </button>
                       </div>
                     </div>
@@ -893,11 +959,10 @@ export default function App() {
                   </div>
                   <div className="space-y-4">
                     <h2 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tighter font-display leading-tight">
-                      تحليل النتائج التعليمية
+                      {t("student_analysis", "تحليلات الأقسام")}
                     </h2>
                     <p className="text-xl font-bold text-slate-400 max-w-md mx-auto leading-relaxed">
-                      قم برفع ملف نقاط القسم بصيغة الإكسل للبدء في تحليل النتائج
-                      أو جرب البيانات التجريبية.
+                      {t("upload_excel_desc", "قم برفع ملف يحتوي على أسماء التلاميذ ونقاطهم. سيرتب التطبيق النتائج ويحللها آلياً.")}
                     </p>
                   </div>
 
@@ -906,14 +971,14 @@ export default function App() {
                       onClick={() => setActiveTab("import")}
                       className="px-10 py-6 bg-emerald-600 text-white rounded-[1.5rem] md:rounded-[2rem] font-black text-xl shadow-2xl shadow-emerald-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
                     >
-                      <span>رفع الملف</span>
+                      <span>{t("upload_excel", "رفع ملف Excel")}</span>
                       <Plus className="w-6 h-6" />
                     </button>
                     <button
                       onClick={loadSampleData}
                       className="px-10 py-6 bg-white dark:bg-[#050505] border-2 border-emerald-100 text-emerald-600 rounded-[1.5rem] md:rounded-[2rem] font-black text-xl hover:bg-emerald-50 active:scale-95 transition-all flex items-center justify-center gap-3 shadow-md"
                     >
-                      <span>بيانات تجريبية</span>
+                      <span>{t("demo_data", "بيانات تجريبية")}</span>
                       <Sparkles className="w-6 h-6" />
                     </button>
                   </div>
@@ -922,18 +987,18 @@ export default function App() {
                 <div className="grid md:grid-cols-3 gap-8">
                   {[
                     {
-                      title: "تحليل دقيق",
-                      desc: "حساب تلقائي للمعدلات والترتيب ونسب النجاح.",
+                      title: t("student_analysis", "تحليلات الأقسام"),
+                      desc: t("auto_calc_average", "حساب تلقائي للمعدل"),
                       icon: ChartBar,
                     },
                     {
-                      title: "تقارير PDF",
-                      desc: "توليد تقارير احترافية لكل قسم أو تلميذ بضغطة زر.",
+                      title: t("print_reports", "طباعة تقارير شاملة"),
+                      desc: t("preview_final_report", "معاينة التقرير النهائي"),
                       icon: Download,
                     },
                     {
-                      title: "متابعة ذكية",
-                      desc: "تحديد تلقائي للتلاميذ الذين يحتاجون لدعم إضافي.",
+                      title: t("smart_analysis", "تحليل ذكي للنتائج"),
+                      desc: t("offline_works", "(يعمل بدون إنترنت)"),
                       icon: AlertCircle,
                     },
                   ].map((feature, i) => (
@@ -966,7 +1031,7 @@ export default function App() {
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 w-full md:w-auto">
                 <h1 className="text-3xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tighter">
-                  تلاميذ {selectedClass}
+                  {t("students_list", "قائمة التلاميذ")} {selectedClass}
                 </h1>
                 {classes.length > 1 && (
                   <div className="w-full md:w-64">
@@ -995,7 +1060,7 @@ export default function App() {
                   className="px-6 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl font-black text-emerald-600 hover:bg-emerald-100 transition-all flex justify-center items-center gap-2 w-full sm:w-auto"
                 >
                   <Download className="w-5 h-5 text-emerald-500" />
-                  <span className="hidden sm:inline">تصدير Excel</span>
+                  <span className="hidden sm:inline">{t("download_pdf", "تحميل مستند PDF")}</span>
                 </button>
               </div>
             </header>
@@ -1011,11 +1076,10 @@ export default function App() {
           <div className="space-y-10 py-6">
             <div>
               <h1 className="text-4xl font-black text-slate-800 dark:text-white tracking-tighter mb-3">
-                رفع بيانات التلاميذ
+                {t("upload_students_data", "رفع بيانات التلاميذ")}
               </h1>
               <p className="text-slate-500 dark:text-[#a3a3a3] font-bold text-lg">
-                يرجى التأكد من أن الملف بصيغة Excel ويحتوي على الأعمدة: الاسم،
-                والمواد.
+                {t("excel_format_warning", "يرجى التأكد من أن الملف بصيغة Excel ويحتوي على الأعمدة: الاسم، والمواد.")}
               </p>
             </div>
             <div className="flex flex-col gap-8">
@@ -1024,15 +1088,13 @@ export default function App() {
               <div className="bg-amber-50 rounded-[2.5rem] p-8 md:p-12 border-2 border-amber-100 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl shadow-amber-100/50">
                 <div className="text-center md:text-right space-y-3">
                   <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-200 mb-2">
-                    إعدادات النظام
+                    {t("settings_title", "الإعدادات والتحكم")}
                   </div>
                   <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-                    نظام الأعمال التطبيقية
+                    {t("practical_work_system", "نظام الأعمال التطبيقية")}
                   </h3>
                   <p className="text-slate-500 dark:text-[#a3a3a3] font-bold max-w-xl">
-                    عند تفعيل هذا الخيار، يتم إضافة خانة "أعمال تطبيقية" وحساب
-                    المعدل كالتالي: (تقويم + أعمال تطبيقية + فرض + اختبار×2) /
-                    5.
+                    {t("practical_work_desc", "عند تفعيل هذا الخيار، يتم إضافة خانة 'أعمال تطبيقية' وحساب المعدل كالتالي: (تقويم + أعمال تطبيقية + فرض + اختبار×2) / 5.")}
                   </p>
                 </div>
 
@@ -1106,8 +1168,8 @@ export default function App() {
                   </div>
                   <span>
                     {teacherConfig.hasPractical
-                      ? "إلغاء الأعمال التطبيقية"
-                      : "تفعيل الأعمال التطبيقية"}
+                      ? t("disable_practical_work", "إلغاء الأعمال التطبيقية")
+                      : t("enable_practical_work", "تفعيل الأعمال التطبيقية")}
                   </span>
                 </button>
               </div>
@@ -1125,10 +1187,10 @@ export default function App() {
           <div className="max-w-4xl mx-auto py-12 md:py-20 space-y-12">
             <div className="space-y-4 text-center">
               <h1 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tighter">
-                الإعدادات والتحكم
+                {t("settings_title", "الإعدادات والتحكم")}
               </h1>
               <p className="text-xl font-bold text-slate-400 max-w-2xl mx-auto">
-                تغيير مظهر التطبيق أو التحكم في خيارات المظهر.
+                {t("settings_desc", "تغيير مظهر التطبيق أو التحكم في خيارات المظهر.")}
               </p>
             </div>
 
@@ -1137,7 +1199,7 @@ export default function App() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">
-                      لون المظهر الأساسي
+                      {t("theme_color", "لون المظهر الأساسي")}
                     </p>
                     <div className="flex gap-3">
                       <button
@@ -1205,7 +1267,7 @@ export default function App() {
 
                   <div className="space-y-3">
                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">
-                      الوضع الليلي والنهاري
+                      {t("dark_mode_title", "الوضع الليلي والنهاري")}
                     </p>
                     <button
                       onClick={() => setIsDarkMode(!isDarkMode)}
@@ -1213,8 +1275,8 @@ export default function App() {
                     >
                       <span className="font-bold text-slate-700 dark:text-[#e5e5e5]">
                         {isDarkMode
-                          ? "الوضع الليلي مفعل"
-                          : "الوضع النهاري مفعل"}
+                          ? t("dark_mode_on", "الوضع الليلي مفعل")
+                          : t("dark_mode_off", "الوضع النهاري مفعل")}
                       </span>
                       <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#050505] shadow-sm flex items-center justify-center text-slate-500 dark:text-[#a3a3a3]">
                         {isDarkMode ? (
@@ -1235,8 +1297,55 @@ export default function App() {
       <RatingModal
         isOpen={showRatingModal}
         onClose={() => setShowRatingModal(false)}
-        onSubmit={handleLogoutConfirm}
+        onSubmit={finalizeLogout}
       />
+
+      <AnimatePresence>
+        {showLogoutConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white dark:bg-[#050505] rounded-[2rem] p-8 w-full max-w-lg shadow-2xl relative"
+              dir={isRTL ? "rtl" : "ltr"}
+            >
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center mx-auto">
+                  <AlertCircle className="w-10 h-10 text-rose-500" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter">
+                    {t("logout_confirm_title")}
+                  </h3>
+                  <p className="text-slate-500 dark:text-slate-400 font-bold leading-relaxed">
+                    {t("logout_confirm_msg")}
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <button
+                    onClick={confirmLogout}
+                    className="flex-1 px-8 py-4 bg-rose-600 text-white rounded-2xl font-black hover:bg-rose-700 transition-all shadow-lg shadow-rose-200"
+                  >
+                    {t("confirm_yes")}
+                  </button>
+                  <button
+                    onClick={() => setShowLogoutConfirm(false)}
+                    className="flex-1 px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl font-black hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  >
+                    {t("confirm_no")}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showPrintMenu && (
@@ -1257,7 +1366,7 @@ export default function App() {
               <button
                 onClick={() => setShowPrintMenu(false)}
                 className="absolute top-4 sm:top-6 left-4 sm:left-6 w-10 h-10 bg-slate-100 dark:bg-[#1a1a1a] rounded-full flex items-center justify-center text-slate-500 dark:text-[#a3a3a3] hover:bg-slate-200 transition-colors"
-                title="إغلاق"
+                title={t("close", "إغلاق")}
               >
                 <X className="w-6 h-6" />
               </button>
@@ -1267,10 +1376,10 @@ export default function App() {
                   <Download className="w-6 sm:w-8 h-6 sm:h-8" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tighter">
-                  تحميل التقارير
+                  {t("download_reports_title", "تحميل التقارير")}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-[#a3a3a3] mt-2 font-bold z-10 relative">
-                  اختر نوع التقرير الذي تريد استخراجه
+                  {t("choose_report_type", "اختر نوع التقرير الذي تريد استخراجه")}
                 </p>
               </div>
 
@@ -1288,10 +1397,10 @@ export default function App() {
                   </div>
                   <div>
                     <h4 className="font-black text-slate-800 dark:text-white text-sm sm:text-lg">
-                      تحليل شامل
+                      {t("comprehensive_analysis", "تحليل شامل")}
                     </h4>
                     <p className="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-[#a3a3a3] mt-0.5 sm:mt-1">
-                      التحليل الإحصائي لجميع الأقسام مجمعة
+                      {t("comprehensive_analysis_desc", "التحليل الإحصائي لجميع الأقسام مجمعة")}
                     </p>
                   </div>
                 </button>
@@ -1303,10 +1412,10 @@ export default function App() {
                     </div>
                     <div>
                       <h4 className="font-black text-slate-800 dark:text-white text-sm sm:text-lg">
-                        تقرير قسم
+                        {t("class_report", "تقرير قسم")}
                       </h4>
                       <p className="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-[#a3a3a3]">
-                        اختر القسم المراد استخراج تقريره
+                        {t("choose_class_for_report", "اختر القسم المراد استخراج تقريره")}
                       </p>
                     </div>
                   </div>
@@ -1315,7 +1424,7 @@ export default function App() {
                     onChange={(e) => setSelectedClass(e.target.value)}
                     className="w-full bg-white dark:bg-[#050505] border border-slate-200 dark:border-[#404040] px-3 sm:px-4 py-2 sm:py-3 rounded-xl font-bold text-sm sm:text-base text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-2 focus:ring-emerald-500 mb-2 sm:mb-3"
                   >
-                    <option value="ALL">جميع الأقسام مجمعة في كشف</option>
+                    <option value="ALL">{t("all_classes_combined", "جميع الأقسام مجمعة في كشف")}</option>
                     {classes.map((cls) => (
                       <option key={cls} value={cls}>
                         {cls}
@@ -1330,7 +1439,7 @@ export default function App() {
                     }}
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 sm:py-3 rounded-xl text-sm sm:text-base transition-colors shadow-lg shadow-emerald-200"
                   >
-                    معاينة وتحميل
+                    {t("preview_and_download", "معاينة وتحميل")}
                   </button>
                 </div>
 
@@ -1341,10 +1450,10 @@ export default function App() {
                     </div>
                     <div>
                       <h4 className="font-black text-slate-800 dark:text-white text-sm sm:text-lg">
-                        شهادات التقدير
+                        {t("certificates_of_appreciation", "شهادات التقدير")}
                       </h4>
                       <p className="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-[#a3a3a3]">
-                        شهادات تقديرية للمتفوقين
+                        {t("certificates_desc", "شهادات تقديرية للمتفوقين")}
                       </p>
                     </div>
                   </div>
@@ -1353,7 +1462,7 @@ export default function App() {
                     onChange={(e) => setSelectedClass(e.target.value)}
                     className="w-full bg-white dark:bg-[#050505] border border-slate-200 dark:border-[#404040] px-3 sm:px-4 py-2 sm:py-3 rounded-xl font-bold text-sm sm:text-base text-slate-700 dark:text-[#e5e5e5] outline-none focus:ring-2 focus:ring-emerald-500 mb-2 sm:mb-3"
                   >
-                    <option value="ALL">جميع الأقسام</option>
+                    <option value="ALL">{t("all_classes", "جميع الأقسام")}</option>
                     {classes.map((cls) => (
                       <option key={cls} value={cls}>
                         {cls}
@@ -1368,7 +1477,7 @@ export default function App() {
                     }}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-2.5 sm:py-3 rounded-xl text-sm sm:text-base transition-colors shadow-lg shadow-blue-200"
                   >
-                    معاينة وتحميل الشهادات
+                    {t("preview_and_download_certs", "معاينة وتحميل الشهادات")}
                   </button>
                 </div>
               </div>
@@ -1404,10 +1513,10 @@ export default function App() {
                   </div>
                   <div className="text-right">
                     <h3 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">
-                      معاينة التقرير النهائي
+                      {t("preview_final_report", "معاينة التقرير النهائي")}
                     </h3>
                     <p className="text-xs font-bold text-slate-400">
-                      راجع البيانات قبل استخراج ملف PDF
+                      {t("review_data_before_pdf", "راجع البيانات قبل استخراج ملف PDF")}
                     </p>
                   </div>
                 </div>
@@ -1426,11 +1535,12 @@ export default function App() {
                     ) : (
                       <Download className="w-4 h-4" />
                     )}
-                    {isDownloading ? "جاري التحضير..." : "تحميل مستند PDF"}
+                    {isDownloading ? t("preparing", "جاري التحضير...") : t("download_pdf", "تحميل مستند PDF")}
                   </button>
                   <button
                     onClick={() => setShowPreviewModal(false)}
                     className="w-12 h-12 flex items-center justify-center bg-white dark:bg-[#050505] border border-slate-200 dark:border-[#404040] text-slate-400 rounded-xl hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-95"
+                    title={t("close", "إغلاق")}
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -1465,10 +1575,10 @@ export default function App() {
                     <div className="absolute inset-0 z-[110] flex flex-col items-center justify-center bg-white/60 backdrop-blur-md">
                       <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
                       <p className="text-xl font-black text-slate-800 dark:text-white tracking-tight">
-                        جاري معالجة التقرير...
+                        {t("processing_report", "جاري معالجة التقرير...")}
                       </p>
                       <p className="text-sm font-bold text-slate-400">
-                        ستكتمل العملية خلال ثوانٍ
+                        {t("process_complete_soon", "ستكتمل العملية خلال ثوانٍ")}
                       </p>
                     </div>
                   )}
@@ -1491,7 +1601,7 @@ export default function App() {
                     <Download className="w-5 h-5" />
                   )}
                   <span>
-                    {isDownloading ? "جاري التحميل..." : "تحميل الآن"}
+                    {isDownloading ? t("downloading", "جاري التحميل...") : t("download_now", "تحميل الآن")}
                   </span>
                 </button>
               </div>

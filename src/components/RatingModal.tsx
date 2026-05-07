@@ -97,7 +97,10 @@ export const RatingModal = ({ isOpen, onClose, onSubmit }: RatingModalProps) => 
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       placeholder={t('feedback_placeholder') as string}
-                      className="w-full h-32 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none text-right placeholder-slate-400 text-slate-700 dark:text-slate-200"
+                      className={cn(
+                        "w-full h-32 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none placeholder-slate-400 text-slate-700 dark:text-slate-200",
+                        i18n.language === 'ar' ? "text-right" : "text-left"
+                      )}
                     />
                   </div>
 

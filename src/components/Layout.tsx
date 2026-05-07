@@ -57,12 +57,13 @@ export const Layout = ({
   onLogout,
   onPrintMenuClick,
 }: LayoutProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   
   return (
     <div
       className="flex flex-col md:flex-row min-h-screen bg-white dark:bg-[#050505] font-sans text-slate-900 dark:text-white overflow-hidden"
-      dir="rtl"
+      dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Background Decor */}
       <div className="fixed inset-0 dots-bg opacity-[0.2] pointer-events-none" />
@@ -74,7 +75,7 @@ export const Layout = ({
         <motion.div 
           animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-20 text-emerald-900"
+          className={cn("absolute top-20 text-emerald-900", isRTL ? "right-20" : "left-20")}
         >
           <GraduationCap size={180} />
         </motion.div>
@@ -82,7 +83,7 @@ export const Layout = ({
         <motion.div 
           animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-20 left-20 text-emerald-900"
+          className={cn("absolute bottom-20 text-emerald-900", isRTL ? "left-20" : "right-20")}
         >
           <Plus size={160} />
         </motion.div>
@@ -90,7 +91,7 @@ export const Layout = ({
         <motion.div 
           animate={{ x: [0, 15, 0], rotate: [0, 10, 0] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[40%] left-[10%] text-slate-900 dark:text-white"
+          className={cn("absolute top-[40%] text-slate-900 dark:text-white", isRTL ? "left-[10%]" : "right-[10%]")}
         >
           <FileSpreadsheet size={120} />
         </motion.div>
@@ -98,24 +99,27 @@ export const Layout = ({
         <motion.div 
           animate={{ x: [0, -15, 0], rotate: [0, -10, 0] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-[40%] right-[10%] text-slate-900 dark:text-white"
+          className={cn("absolute bottom-[40%] text-slate-900 dark:text-white", isRTL ? "right-[10%]" : "left-[10%]")}
         >
           <Settings size={130} />
         </motion.div>
       </div>
 
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-72 bg-white/80 backdrop-blur-2xl border-l border-slate-100 dark:border-[#262626] p-8 sticky top-0 h-screen z-20 shadow-[10px_0_40px_-20px_rgba(0,0,0,0.01)]">
+      <aside className={cn(
+        "hidden md:flex flex-col w-72 bg-white/80 backdrop-blur-2xl p-8 sticky top-0 h-screen z-20 shadow-[10px_0_40px_-20px_rgba(0,0,0,0.01)]",
+        isRTL ? "border-l border-slate-100 dark:border-[#262626]" : "border-r border-slate-100 dark:border-[#262626]"
+      )}>
         <div className="flex items-center gap-4 mb-14 px-2">
           <div className="w-14 h-14 bg-gradient-to-br from-emerald-600 via-emerald-500 to-green-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-emerald-200/40 group transition-all duration-500 hover:rotate-3">
             <LayoutDashboard className="text-white w-8 h-8 group-hover:scale-110 transition-transform" />
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tighter text-slate-800 dark:text-white leading-none font-display">
-              برنامج الأستاذ
+              {t("app_name")}
             </h1>
             <p className="text-[10px] font-black text-slate-400 mt-1.5 uppercase tracking-widest leading-none">
-              تحليل النتائج
+              {t("analysis_results")}
             </p>
           </div>
         </div>
@@ -164,21 +168,21 @@ export const Layout = ({
             onClick={onLogout}
             className="flex items-center gap-3 px-6 py-4 rounded-2xl text-rose-500 hover:bg-rose-50 transition-all duration-300 w-full group border border-transparent hover:border-rose-100 font-bold"
           >
-            <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <LogOut className={cn("w-5 h-5 transition-transform", isRTL ? "group-hover:-translate-x-1" : "group-hover:translate-x-1")} />
             <span className="tracking-tight">{t("logout", "تسجيل الخروج")}</span>
           </button>
 
           <div className="p-6 bg-slate-900 rounded-[2.5rem] border border-white/5 relative overflow-hidden group shadow-2xl">
             <div className="relative z-10">
               <p className="text-[10px] font-black text-slate-500 dark:text-[#a3a3a3] mb-1.5 uppercase tracking-widest leading-none">
-                المسؤول
+                {t("responsible")}
               </p>
               <p className="text-sm font-black text-white leading-none">
-                أستاذ المادة
+                {t("subject_teacher")}
               </p>
             </div>
-            <div className="absolute top-0 right-0 p-4 opacity-10 bg-gradient-to-br from-white/20 to-transparent rounded-full -m-4 w-24 h-24" />
-            <User className="absolute -bottom-2 -left-2 w-16 h-16 text-white/5 group-hover:scale-110 transition-transform" />
+            <div className={cn("absolute top-0 p-4 opacity-10 bg-gradient-to-br from-white/20 to-transparent rounded-full -m-4 w-24 h-24", isRTL ? "right-0" : "left-0")} />
+            <User className={cn("absolute -bottom-2 w-16 h-16 text-white/5 group-hover:scale-110 transition-transform", isRTL ? "-left-2" : "-right-2")} />
           </div>
         </div>
       </aside>
@@ -190,11 +194,14 @@ export const Layout = ({
           <div className="relative group">
             <input
               type="text"
-              placeholder="بحث عن تلميذ..."
-              className="w-80 bg-white dark:bg-[#050505] border border-slate-100 dark:border-[#262626] rounded-2xl py-3 pr-12 pl-6 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 focus:bg-white dark:bg-[#050505] transition-all font-bold placeholder:text-slate-400 shadow-sm"
+              placeholder={t("search_student") as string}
+              className={cn(
+                "w-80 bg-white dark:bg-[#050505] border border-slate-100 dark:border-[#262626] rounded-2xl py-3 pl-6 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 transition-all font-bold placeholder:text-slate-400 shadow-sm",
+                isRTL ? "pr-12" : "pl-12"
+              )}
             />
             <svg
-              className="w-5 h-5 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 group-focus-within:text-emerald-500 transition-colors"
+              className={cn("w-5 h-5 text-slate-400 absolute top-1/2 -translate-y-1/2 group-focus-within:text-emerald-500 transition-colors", isRTL ? "right-4" : "left-4")}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -211,25 +218,25 @@ export const Layout = ({
           <div className="flex items-center gap-4">
             <button className="p-3 bg-white dark:bg-[#050505] border border-slate-100 dark:border-[#262626] rounded-2xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all relative group shadow-sm">
               <Bell className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-              <span className="absolute top-3 left-3 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
+              <span className={cn("absolute top-3 w-2 h-2 bg-rose-500 border-2 border-white rounded-full", isRTL ? "left-3" : "right-3")}></span>
             </button>
             <div className="h-10 w-px bg-slate-100 dark:bg-[#1a1a1a] mx-2"></div>
-            <div className="flex items-center gap-3 pl-2">
+            <div className={cn("flex items-center gap-3", isRTL ? "pl-2" : "pr-2")}>
               <button
                 onClick={onLogout}
-                className="ml-4 p-2.5 text-rose-500 hover:bg-rose-50 rounded-xl transition-all flex items-center gap-2 border border-transparent hover:border-rose-100"
+                className={cn("p-2.5 text-rose-500 hover:bg-rose-50 rounded-xl transition-all flex items-center gap-2 border border-transparent hover:border-rose-100", isRTL ? "ml-4" : "mr-4")}
               >
                 <LogOut className="w-5 h-5" />
-                <span className="text-xs font-black">خروج</span>
+                <span className="text-xs font-black">{t("logout_small")}</span>
               </button>
-              <div className="text-left">
+              <div>
                 <p className="text-sm font-black text-slate-800 dark:text-white">
-                  لوحة التحكم
+                  {t("dashboard")}
                 </p>
-                <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                <div className={cn("flex items-center gap-1.5 mt-0.5", isRTL ? "justify-end" : "justify-start")}>
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                  <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest text-right">
-                    متصل
+                  <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">
+                    {t("online")}
                   </p>
                 </div>
               </div>

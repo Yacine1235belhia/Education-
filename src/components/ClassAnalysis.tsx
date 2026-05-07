@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Student } from '../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { Users, TrendingUp, AlertCircle, Award } from 'lucide-react';
@@ -9,13 +10,13 @@ interface ClassAnalysisProps {
   allStudents?: Student[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label, t }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-[#050505] p-4 rounded-xl shadow-lg border border-slate-100 dark:border-[#262626] flex flex-col gap-1">
         <p className="font-black text-slate-800 dark:text-white text-sm">{label}</p>
         <p className="font-bold text-emerald-600 text-sm">
-          المعدل: {payload[0].value}
+          {t("average", "المعدل")}: {payload[0].value}
         </p>
       </div>
     );
@@ -23,13 +24,13 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const CustomPieTooltip = ({ active, payload }: any) => {
+const CustomPieTooltip = ({ active, payload, t }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-[#050505] p-4 rounded-xl shadow-lg border border-slate-100 dark:border-[#262626] flex flex-col gap-1">
         <p className="font-black text-slate-800 dark:text-white text-sm">{payload[0].name}</p>
         <p className="font-bold text-emerald-600 text-sm">
-          العدد: {payload[0].value} ({Math.round(payload[0].payload.percent * 100)}%)
+          {t("count_label", "العدد")}: {payload[0].value} ({Math.round(payload[0].payload.percent * 100)}%)
         </p>
       </div>
     );
@@ -38,6 +39,7 @@ const CustomPieTooltip = ({ active, payload }: any) => {
 };
 
 export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStudents }) => {
+  const { t, i18n } = useTranslation();
   if (!students || students.length === 0) return null;
 
   // Grade Distribution
@@ -47,14 +49,14 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
   const poor = students.filter(s => (s.overallAverage || 0) < 10).length;
 
   const distributionData = [
-    { name: 'ممتاز (-15)', value: excellent, color: '#f59e0b' },
-    { name: 'جيد (12-14)', value: good, color: '#34d399' },
-    { name: 'متوسط (10-11)', value: average, color: '#60a5fa' },
-    { name: 'ضعيف (<10)', value: poor, color: '#f87171' },
+    { name: t("excellent_range", "ممتاز (15+)"), value: excellent, color: '#f59e0b' },
+    { name: t("good_range", "جيد (12-14)"), value: good, color: '#34d399' },
+    { name: t("average_range", "متوسط (10-11)"), value: average, color: '#60a5fa' },
+    { name: t("poor_range", "ضعيف (<10)"), value: poor, color: '#f87171' },
   ];
 
-  const total = students.length;
-  const distributionDataWithPercent = distributionData.map(d => ({ ...d, percent: d.value / total }));
+  const totalLength = students.length;
+  const distributionDataWithPercent = distributionData.map(d => ({ ...d, percent: d.value / totalLength }));
 
   // Top 10 for bar chart or line chart of all if small
   const chartData = [...students]
@@ -81,23 +83,23 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
         <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
           <TrendingUp className="w-5 h-5" />
         </div>
-        <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">تحليل البيانات والفروقات</h2>
+        <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{t("data_and_variance_analysis", "تحليل البيانات والفروقات")}</h2>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col items-center justify-center text-center">
-          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">أعلى معدل</p>
+          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">{t("highest_average", "أعلى معدل")}</p>
           <p className="text-3xl font-black text-emerald-600 font-mono">{max.toFixed(2)}</p>
         </div>
         <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col items-center justify-center text-center">
-          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">أدنى معدل</p>
+          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">{t("lowest_average", "أدنى معدل")}</p>
           <p className="text-3xl font-black text-rose-600 font-mono">{min.toFixed(2)}</p>
         </div>
          <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col items-center justify-center text-center">
-          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">الانحراف المعياري (التباين)</p>
+          <p className="text-slate-500 dark:text-[#a3a3a3] font-bold mb-2 uppercase tracking-wide text-xs">{t("standard_deviation", "الانحراف المعياري (التباين)")}</p>
           <p className="text-3xl font-black text-indigo-600 font-mono">{stdDev.toFixed(2)}</p>
           <p className="text-[10px] text-slate-400 mt-2 font-bold">
-            {stdDev < 2 ? 'مستوى القسم متقارب' : 'مستوى القسم متفاوت'}
+            {stdDev < 2 ? t("closely_matched_level", "مستوى القسم متقارب") : t("varied_level", "مستوى القسم متفاوت")}
           </p>
         </div>
       </div>
@@ -106,7 +108,7 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
         <div className="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626]">
           <h3 className="font-black text-lg text-slate-800 dark:text-white mb-6 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 block"></span>
-            معدلات التلاميذ (ترتيب تنازلي)
+            {t("student_averages_descending", "معدلات التلاميذ (ترتيب تنازلي)")}
           </h3>
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -114,7 +116,7 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} domain={[0, 20]} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: '#f8fafc'}} />
+                <Tooltip content={<CustomTooltip t={t} />} cursor={{fill: '#f8fafc'}} />
                 <Bar dataKey="average" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -124,7 +126,7 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
         <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-100 dark:border-[#262626] flex flex-col">
           <h3 className="font-black text-lg text-slate-800 dark:text-white mb-6 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-indigo-500 block"></span>
-            التوزيع والمستويات
+            {t("distribution_and_levels", "التوزيع والمستويات")}
           </h3>
           <div className="flex-1 min-h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -143,7 +145,7 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomPieTooltip />} />
+                <Tooltip content={<CustomPieTooltip t={t} />} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -157,9 +159,6 @@ export const ClassAnalysis: React.FC<ClassAnalysisProps> = ({ students, allStude
           </div>
         </div>
       </div>
-
-
-
     </div>
   );
 };

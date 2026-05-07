@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { Student } from "../types";
 import { cn } from "../lib/utils";
 import {
   Trophy,
   TrendingUp,
-  TrendingDown,
   UserCircle2,
   AlertCircle,
   ChevronRight,
@@ -17,6 +17,7 @@ interface GradeTableProps {
 }
 
 export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
+  const { t, i18n } = useTranslation();
   const [displayCount, setDisplayCount] = React.useState(50);
   
   if (students.length === 0) {
@@ -25,7 +26,7 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
         <div className="flex flex-col items-center gap-4 opacity-40">
           <UserCircle2 className="w-16 h-16 text-slate-200" />
           <p className="font-bold text-slate-400">
-            لا توجد بيانات حالياً. يرجى رفع ملف إكسل.
+            {t("no_data_warning", "لا توجد بيانات حالياً. يرجى رفع ملف إكسل.")}
           </p>
         </div>
       </div>
@@ -37,7 +38,7 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
   return (
     <div className="space-y-3 md:space-y-6">
       {/* Mobile Streamlined List (Matching Screenshot) */}
-      <div className="grid grid-cols-1 gap-2.5 md:hidden" dir="rtl">
+      <div className="grid grid-cols-1 gap-2.5 md:hidden">
         {visibleStudents.map((student) => (
           <motion.div
             key={student.id}
@@ -46,7 +47,7 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
             className="flex items-center justify-between p-3 bg-white dark:bg-[#050505] rounded-3xl border border-slate-50 shadow-sm active:bg-slate-50 dark:bg-[#111111] transition-colors"
           >
             {/* Right side: Rank + Avatar + Name */}
-            <div className="flex items-center gap-2.5">
+            <div className={cn("flex items-center gap-2.5", i18n.language === 'ar' ? "flex-row" : "flex-row")}>
               <div className="flex items-center gap-1 shrink-0">
                 <div className={cn(
                   "w-7 h-7 rounded-lg flex items-center justify-center font-black text-[10px]",
@@ -80,7 +81,7 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
                 {student.overallAverage?.toFixed(2)}
               </span>
               <div className="w-8 h-8 rounded-xl bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#262626] flex items-center justify-center">
-                <ChevronRight className="w-4 h-4 text-slate-300" />
+                <ChevronRight className={cn("w-4 h-4 text-slate-300", i18n.language === 'ar' ? "rotate-0" : "rotate-180")} />
               </div>
             </div>
           </motion.div>
@@ -91,22 +92,21 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
       <div className="hidden md:block glass-card rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200/50 border border-slate-100 dark:border-[#262626] bg-white dark:bg-[#050505]">
         <div className="overflow-x-auto">
           <table
-            className="w-full text-right border-collapse min-w-full"
-            dir="rtl"
+            className={cn("w-full border-collapse min-w-full", i18n.language === 'ar' ? "text-right" : "text-left")}
           >
             <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-200/50 text-right">
-                <th className="px-5 py-4 font-black text-slate-400 text-[10px] uppercase tracking-widest">
-                  التلميذ (الرتبة والاسم)
+              <tr className="bg-slate-50/50 border-b border-slate-200/50">
+                <th className={cn("px-5 py-4 font-black text-slate-400 text-[10px] uppercase tracking-widest", i18n.language === 'ar' ? "text-right" : "text-left")}>
+                  {t("table_student_title", "التلميذ (الرتبة والاسم)")}
                 </th>
                 <th className="px-5 py-4 font-black text-slate-400 text-[10px] uppercase tracking-widest text-center whitespace-nowrap">
-                  المعدل
+                  {t("table_average", "المعدل")}
                 </th>
-                <th className="px-5 py-4 font-black text-slate-400 text-[10px] uppercase tracking-widest whitespace-nowrap">
-                  توقعات الحالة
+                <th className={cn("px-5 py-4 font-black text-slate-400 text-[10px] uppercase tracking-widest whitespace-nowrap", i18n.language === 'ar' ? "text-right" : "text-left")}>
+                  {t("status_prediction", "توقعات الحالة")}
                 </th>
                 <th className="px-5 py-4 font-black text-slate-400 text-[10px] uppercase tracking-widest text-center whitespace-nowrap">
-                  إجراءات
+                  {t("table_actions", "إجراءات")}
                 </th>
               </tr>
             </thead>
@@ -168,15 +168,15 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
                       )}
                     >
                       {(student.overallAverage || 0) >= 10 ? (
-                        <><TrendingUp className="w-3 h-3" /> <span>ناجح</span></>
+                        <><TrendingUp className="w-3 h-3" /> <span>{t("passed", "ناجح")}</span></>
                       ) : (
-                        <><AlertCircle className="w-3 h-3" /> <span>راسب</span></>
+                        <><AlertCircle className="w-3 h-3" /> <span>{t("failed", "راسب")}</span></>
                       )}
                     </div>
                   </td>
                   <td className="px-5 py-3 text-center">
                     <button className="p-2 bg-slate-50 dark:bg-[#111111] text-slate-400 rounded-xl hover:bg-white dark:bg-[#050505] hover:text-emerald-600 transition-all border border-slate-200/50 group-hover:bg-white dark:bg-[#050505] group-hover:text-emerald-600 shadow-sm group-hover:shadow-lg active:scale-90">
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className={cn("w-5 h-5", i18n.language === 'ar' ? "rotate-0" : "rotate-180")} />
                     </button>
                   </td>
                 </tr>
@@ -192,7 +192,7 @@ export const GradeTable = ({ students, onSelectStudent }: GradeTableProps) => {
             onClick={() => setDisplayCount(prev => prev + 50)}
             className="px-10 py-4 bg-white dark:bg-[#050505] border border-slate-200 dark:border-[#404040] text-slate-600 dark:text-[#d4d4d4] rounded-2xl font-black text-sm hover:bg-slate-50 dark:bg-[#111111] transition-all flex items-center gap-2 shadow-sm"
           >
-            <span>عرض المزيد ({students.length - displayCount})</span>
+            <span>{t("show_more", "عرض المزيد")} ({students.length - displayCount})</span>
             <ChevronRight className="w-4 h-4 rotate-90" />
           </button>
         </div>
