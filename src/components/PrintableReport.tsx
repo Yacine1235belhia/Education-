@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Student, TeacherConfig } from '../types';
+import { getAppreciation } from '../lib/utils';
 
 interface PrintableReportProps {
   students: Student[];
@@ -63,12 +64,13 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
   const TableColGroups = () => (
     <colgroup>
       <col style={{ width: '6%' }} />
-      <col style={{ width: teacherConfig.hasPractical ? '28%' : '39%' }} />
-      <col style={{ width: '11%' }} />
-      {teacherConfig.hasPractical && <col style={{ width: '11%' }} />}
-      <col style={{ width: '11%' }} />
-      <col style={{ width: '11%' }} />
-      <col style={{ width: '22%' }} />
+      <col style={{ width: teacherConfig.hasPractical ? '18%' : '28%' }} />
+      <col style={{ width: '10%' }} />
+      {teacherConfig.hasPractical && <col style={{ width: '10%' }} />}
+      <col style={{ width: '10%' }} />
+      <col style={{ width: '10%' }} />
+      <col style={{ width: '10%' }} />
+      <col style={{ width: '16%' }} />
     </colgroup>
   );
 
@@ -77,17 +79,19 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
       <tr style={{ backgroundColor: '#e5e7eb' }}>
          <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '11px' }}>{t("rank_short")}</th>
          <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("name_label", "الاسم")}</th>
-         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("evaluation")}</th>
-         {teacherConfig.hasPractical && <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("practical_short")}</th>}
-         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("quiz")}</th>
-         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("exam")}</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '11px' }}>{teacherConfig.hasPractical ? t("evaluation") : t("evaluation_merged", "النشاطات")}</th>
+         {teacherConfig.hasPractical && <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '11px' }}>{t("practical_short")}</th>}
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '11px' }}>{t("quiz")}</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '11px' }}>{t("exam")}</th>
          <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', backgroundColor: '#d1d5db', fontSize: '12px' }}>{t("average")}</th>
+         <th style={{ padding: '4px 2px', fontWeight: '900', border: '1px solid #000000', fontSize: '12px' }}>{t("appreciation", "التقدير")}</th>
        </tr>
     </thead>
   );
 
   const renderTableRow = (student: Student, index: number) => {
     const mainGrade = (Object.values(student.grades)[0] || {}) as any;
+    const appreciation = getAppreciation(student.overallAverage);
     
     return (
       <tr style={{ borderBottom: '1px solid #000000' }}>
@@ -98,6 +102,7 @@ export const PrintableReport = forwardRef<HTMLDivElement, PrintableReportProps>(
         <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.quiz ?? '-'}</td>
         <td style={{ padding: '2px', border: '1px solid #000000', fontSize: '11px' }}>{mainGrade.exam ?? '-'}</td>
         <td style={{ padding: '2px', border: '1px solid #000000', fontWeight: '900', backgroundColor: '#f3f4f6', fontSize: '12px' }}>{student.overallAverage?.toFixed(2) || '-'}</td>
+        <td style={{ padding: '2px', border: '1px solid #000000', fontWeight: '900', fontSize: '11px' }}>{appreciation}</td>
       </tr>
     );
   };

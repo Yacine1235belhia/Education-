@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { BookOpen } from 'lucide-react';
 import { Student, TeacherConfig } from '../types';
 import { getFixedPedagogicalAnalysis } from '../services/pedagogicalService';
+import { getAppreciation } from '../lib/utils';
 
 interface PrintableSingleReportProps {
   student: Student;
@@ -38,22 +39,26 @@ export const PrintableSingleReport = forwardRef<HTMLDivElement, PrintableSingleR
         </div>
         
         <div className="mb-10 text-xl space-y-8">
-          <div className="grid grid-cols-2 gap-px rounded-2xl overflow-hidden shadow-sm" style={{ backgroundColor: '#e2e8f0', border: '1px solid #e2e8f0' }}>
-            <div className="p-5 flex flex-col gap-1" style={{ backgroundColor: '#f8fafc' }}>
+          <div className="grid grid-cols-3 gap-px rounded-2xl overflow-hidden shadow-sm" style={{ backgroundColor: '#e2e8f0', border: '1px solid #e2e8f0' }}>
+            <div className="col-span-2 p-5 flex flex-col gap-1" style={{ backgroundColor: '#f8fafc' }}>
               <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#94a3b8' }}>الاسم واللقب</span>
               <span className="font-black text-2xl uppercase tracking-tight" style={{ color: '#0f172a' }}>{student.name}</span>
-            </div>
-            <div className="p-5 flex flex-col gap-1" style={{ backgroundColor: '#ffffff' }}>
-              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#94a3b8' }}>رقم التعريف</span>
-              <span className="font-mono font-black italic" style={{ color: '#475569' }}>{student.studentNumber || '-'}</span>
             </div>
             <div className="p-5 flex flex-col gap-1" style={{ backgroundColor: '#ffffff' }}>
               <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#94a3b8' }}>الرتبة في القسم</span>
               <span className="font-black text-3xl font-mono" style={{ color: '#0f172a' }}>{student.rank || '-'}</span>
             </div>
+            <div className="p-5 flex flex-col gap-1" style={{ backgroundColor: '#ffffff' }}>
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#94a3b8' }}>رقم التعريف</span>
+              <span className="font-mono font-black italic" style={{ color: '#475569' }}>{student.studentNumber || '-'}</span>
+            </div>
             <div className="p-5 flex flex-col gap-1" style={{ backgroundColor: '#059669', color: '#ffffff' }}>
               <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#d1fae5' }}>المعدل النهائي للمادة</span>
               <span className="font-black text-4xl font-mono">{student.overallAverage?.toFixed(2) || '-'}</span>
+            </div>
+            <div className="p-5 flex flex-col gap-1" style={{ backgroundColor: '#0284c7', color: '#ffffff' }}>
+              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#bae6fd' }}>التقدير</span>
+              <span className="font-black text-3xl">{getAppreciation(student.overallAverage)}</span>
             </div>
           </div>
           
@@ -65,7 +70,7 @@ export const PrintableSingleReport = forwardRef<HTMLDivElement, PrintableSingleR
              <table className="w-full text-center border-collapse mb-8 overflow-hidden rounded-2xl" style={{ border: '2px solid #000000', fontSize: '16px' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
-                   <th className="px-6 py-4 font-black uppercase tracking-widest text-xs" style={{ border: '1px solid #1e293b' }}>التقويم</th>
+                   <th className="px-6 py-4 font-black uppercase tracking-widest text-xs" style={{ border: '1px solid #1e293b' }}>{teacherConfig.hasPractical ? "التقويم" : "معدل تقويم النشاطات"}</th>
                    {teacherConfig.hasPractical && (
                      <th className="px-6 py-4 font-black uppercase tracking-widest text-xs" style={{ border: '1px solid #1e293b' }}>أعمال تطبيقية</th>
                    )}

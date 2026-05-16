@@ -49,6 +49,36 @@ export const TeacherConfigModal = ({ teacherConfig, updateTeacherConfig, onSubmi
         </div>
 
         <div className="space-y-8">
+          <div className="space-y-3">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">{t('institution_level', 'الطور التعليمي')}</label>
+            <div className="flex gap-4">
+              <button 
+                type="button"
+                onClick={() => updateTeacherConfig({...teacherConfig, level: 'متوسطة'})}
+                className={cn(
+                  "flex-1 py-4 rounded-[1.5rem] font-black border transition-all flex items-center justify-center",
+                  teacherConfig.level === 'متوسطة' || teacherConfig.level === 'متوسط'
+                    ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 text-emerald-700 dark:text-emerald-400" 
+                    : "bg-slate-50 dark:bg-[#111111] border-slate-200 dark:border-[#262626] text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1a1a1a]"
+                )}
+              >
+                متوسطة
+              </button>
+              <button 
+                type="button"
+                onClick={() => updateTeacherConfig({...teacherConfig, level: 'ثانوية'})}
+                className={cn(
+                  "flex-1 py-4 rounded-[1.5rem] font-black border transition-all flex items-center justify-center",
+                  teacherConfig.level === 'ثانوية' || teacherConfig.level === 'ثانوي'
+                    ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 text-emerald-700 dark:text-emerald-400" 
+                    : "bg-slate-50 dark:bg-[#111111] border-slate-200 dark:border-[#262626] text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1a1a1a]"
+                )}
+              >
+                ثانوية
+              </button>
+            </div>
+          </div>
+
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="space-y-3">
               <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-2">{t('teacher_name')}</label>

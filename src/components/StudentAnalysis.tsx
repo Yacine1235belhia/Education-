@@ -114,7 +114,7 @@ export const StudentAnalysis = ({ student, onClose, teacherConfig }: StudentAnal
                     <thead className="bg-slate-50/50">
                       <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-[#262626]">
                         <th className={cn("px-6 md:px-8 py-5", i18n.language === 'ar' ? "text-right" : "text-left")}>{t("subject", "المادة")}</th>
-                        <th className="px-4 py-5 text-center">{t("evaluation", "التقويم")}</th>
+                        <th className="px-4 py-5 text-center">{teacherConfig.hasPractical ? t("evaluation", "التقويم") : t("evaluation_merged", "معدل تقويم النشاطات")}</th>
                         {teacherConfig.hasPractical && (
                           <th className="px-4 py-5 text-center">{t("practical_work", "أعمال تطبيقية")}</th>
                         )}
@@ -163,7 +163,7 @@ export const StudentAnalysis = ({ student, onClose, teacherConfig }: StudentAnal
                       
                       <div className="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-[#111111] p-4 rounded-2xl border border-slate-100 dark:border-[#262626]">
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] text-slate-400 font-bold">{t("evaluation", "التقويم")}</span>
+                          <span className="text-[10px] text-slate-400 font-bold">{teacherConfig.hasPractical ? t("evaluation", "التقويم") : t("evaluation_merged", "معدل تقويم النشاطات")}</span>
                           <span className="font-mono font-black text-slate-600 dark:text-[#d4d4d4]">{g.evaluation ?? '-'}</span>
                         </div>
                         {teacherConfig.hasPractical && (

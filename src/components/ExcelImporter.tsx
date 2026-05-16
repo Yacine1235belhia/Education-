@@ -115,8 +115,8 @@ export const ExcelImporter = ({ onDataLoaded, isLoading, teacherConfig, updateTe
                 <tr className="bg-slate-100/50 dark:bg-white/5 border-b border-slate-100 dark:border-[#262626] sticky top-0 z-20 font-bold">
                   <th className={cn("px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest", i18n.language === 'ar' ? "text-right" : "text-left")}>{t("student", "تلميذ")}</th>
                   <th className={cn("px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest", i18n.language === 'ar' ? "text-right" : "text-left")}>{t("class_label", "القسم")}</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{t("evaluation", "التقويم")}</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{t("practical_work", "أعمال تطبيقية")}</th>
+                  <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{teacherConfig.hasPractical ? t("evaluation", "التقويم") : t("evaluation_merged", "معدل تقويم النشاطات")}</th>
+                  {teacherConfig.hasPractical && <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{t("practical_work", "أعمال تطبيقية")}</th>}
                   <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{t("quiz", "معدل الفروض")}</th>
                   <th className="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{t("exam", "الاختبار")}</th>
                   <th className="px-6 py-5 text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest bg-emerald-50/50 dark:bg-emerald-500/10 text-center">{t("expected_average", "المعدل المتوقع")}</th>
@@ -141,7 +141,7 @@ export const ExcelImporter = ({ onDataLoaded, isLoading, teacherConfig, updateTe
                       <td className={cn("px-6 py-5 font-black text-slate-700 dark:text-[#e5e5e5] text-sm", i18n.language === 'ar' ? "text-right" : "text-left")}>{student.name}</td>
                       <td className={cn("px-6 py-5 font-bold text-slate-400 text-xs", i18n.language === 'ar' ? "text-right" : "text-left")}>{student.className}</td>
                       <td className="px-6 py-5 font-mono font-bold text-slate-600 dark:text-[#d4d4d4] text-center">{mainGrade.evaluation ?? '-'}</td>
-                      <td className={cn("px-6 py-5 font-mono font-bold text-center", teacherConfig.hasPractical ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50/10 dark:bg-emerald-500/5" : "text-slate-400 dark:text-slate-600")}>{mainGrade.practical ?? '-'}</td>
+                      {teacherConfig.hasPractical && <td className={cn("px-6 py-5 font-mono font-bold text-center", teacherConfig.hasPractical ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50/10 dark:bg-emerald-500/5" : "text-slate-400 dark:text-slate-600")}>{mainGrade.practical ?? '-'}</td>}
                       <td className="px-6 py-5 font-mono font-bold text-slate-600 dark:text-[#d4d4d4] text-center">{mainGrade.quiz ?? '-'}</td>
                       <td className="px-6 py-5 font-mono font-bold text-slate-600 dark:text-[#d4d4d4] text-center">{mainGrade.exam ?? '-'}</td>
                       <td className="px-6 py-5 font-mono font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50/30 dark:bg-emerald-500/10 text-center">

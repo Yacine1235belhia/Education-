@@ -113,25 +113,9 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [students, setStudents] = useState<Student[]>(() => {
-    try {
-      const saved = localStorage.getItem("edugrade_students");
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [selectedClass, setSelectedClass] = useState<string>(() => {
-    try {
-      const saved = localStorage.getItem("edugrade_students");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.length > 0 ? (parsed[0].className || "") : "";
-      }
-    } catch (e) {}
-    return "";
-  });
+  const [selectedClass, setSelectedClass] = useState<string>("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showPrintMenu, setShowPrintMenu] = useState(false);
   const [showTeacherConfigModal, setShowTeacherConfigModal] = useState(false);
@@ -151,7 +135,7 @@ export default function App() {
       name: "",
       institution: "",
       subject: "",
-      level: "ثانوي",
+      level: "ثانوية",
       province: "",
       hasPractical: false,
       academicYear: "2025/2026",
@@ -229,13 +213,6 @@ export default function App() {
     }, 500);
   };
 
-  // Persistence effects
-  useEffect(() => {
-    if (students && students.length >= 0) {
-      localStorage.setItem("edugrade_students", JSON.stringify(students));
-    }
-  }, [students]);
-
   useEffect(() => {
     localStorage.setItem("edugrade_teacher_config", JSON.stringify(teacherConfig));
   }, [teacherConfig]);
@@ -268,20 +245,7 @@ export default function App() {
           );
         }
 
-        // Sync students from Firebase for this institution
-        onSnapshot(
-          collection(db, `institutions/${currentUser.uid}/students`),
-          (snapshot) => {
-            const fbStudents = snapshot.docs.map(
-              (doc) => ({ id: doc.id, ...doc.data() }) as Student,
-            );
-            // If we have data in Firebase, use it
-            if (fbStudents.length > 0) {
-              setStudents(fbStudents);
-              setSelectedClass((prev) => prev || fbStudents[0].className || "");
-            }
-          },
-        );
+        // Students data is no longer synced from Firebase to allow fresh sessions
       } else {
         const authStatus = sessionStorage.getItem("edugrade_auth");
         if (authStatus === "true") setIsLoggedIn(true);
@@ -460,14 +424,6 @@ export default function App() {
         return { ...student, grades: updatedGrades, overallAverage };
       });
       setStudents(updatedStudents);
-      if (user) {
-        firebaseStorage.saveStudentsBatch(institutionId, updatedStudents).catch(e => console.error(e));
-      } else {
-        localStorage.setItem(
-          "edugrade_students",
-          JSON.stringify(updatedStudents),
-        );
-      }
     }
   };
 
@@ -476,7 +432,7 @@ export default function App() {
       name: "",
       institution: "",
       subject: "",
-      level: "ثانوي",
+      level: "ثانوية",
       province: "",
       hasPractical: false,
       academicYear: "2025/2026",
@@ -536,15 +492,6 @@ export default function App() {
       });
 
       setStudents(stabilizedData);
-
-      if (user) {
-        firebaseStorage.saveStudentsBatch(institutionId, stabilizedData).catch(e => console.error(e));
-      } else {
-        localStorage.setItem(
-          "edugrade_students",
-          JSON.stringify(stabilizedData),
-        );
-      }
 
       if (stabilizedData.length > 0) {
         const firstClass = stabilizedData[0].className || "غير مصنف";
@@ -654,9 +601,6 @@ export default function App() {
       },
     ];
     setStudents(sampleStudents);
-    try {
-      localStorage.setItem("edugrade_students", JSON.stringify(sampleStudents));
-    } catch (e) {}
     setSelectedClass("3 ثانوي ع ت 1");
     setActiveTab("students");
   };
@@ -711,7 +655,7 @@ export default function App() {
             <header className="flex flex-col items-center gap-10 text-center">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-4xl md:text-7xl font-black text-slate-800 dark:text-white tracking-tighter leading-tight md:leading-[0.9] font-display">
-                  {t("app_title", "منصة الأستاذ بلحية ياسين")}
+                  {t("app_title", "منصة الأستاذ")}
                 </h1>
                 <p className="text-lg md:text-xl font-bold text-slate-400 leading-relaxed max-w-xl mx-auto">
                   {t("platform_desc", "المنصة الشاملة لإدارة وتحليل وتقييم نتائج التلاميذ بكل سهولة واحترافية.")}

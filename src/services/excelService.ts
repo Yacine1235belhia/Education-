@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx';
 import { Student } from '../types';
 
 const KEYWORDS = {
-  EVALUATION: ['تقويم', 'التقويم', 'مستمر', 'التقييم المستمر', 'نشاط', 'مشاركة', 'evaluation', 'controll', 'moyen', 'cc', 'note1', 'eval', 'تقويم مستمر'],
+  EVALUATION: ['تقويم', 'التقويم', 'مستمر', 'التقييم المستمر', 'نشاط', 'مشاركة', 'evaluation', 'controll', 'moyen', 'cc', 'note1', 'eval', 'تقويم مستمر', 'معدل تقويم النشاطات', 'تقويم النشاطات'],
   PRACTICAL: ['أعمال تطبيقية', 'اعمال تطبيقية', 'تطبيقية', 'تعبير شفوي', 'تعبير', 'tp', 'travaux pratiques', 'oral', 'application'],
   QUIZ: ['فرض', 'فردي', 'راقية', 'quiz', 'interrogation', 'test', 'note2', 'وظيفة', 'الفرض', 'فرض محروس', 'الفرض الأول', 'الفرض الثاني', 'معدل الفروض', 'معدل الفروض / 20'],
   EXAM: ['اختبار', 'نهائي', 'فصل', 'exam', 'composition', 'examen', 'note3', 'إختبار', 'الاختبار', 'اختار الفصل', 'الامتحان'],
@@ -88,6 +88,41 @@ export const excelService = {
             if (subjectMatch) detectedSubject = subjectMatch[1].trim();
           }
 
+          let evalIdx = 4;
+          let pracIdx = 5;
+          let quizIdx = 6;
+          let examIdx = 7;
+          
+          const maxCols = Math.max((rawData[6] as any[] || []).length, (rawData[7] as any[] || []).length);
+          const headerRow: string[] = [];
+          for (let c = 0; c < maxCols; c++) {
+            const h6 = (rawData[6]?.[c] || '').toString().trim();
+            const h7 = (rawData[7]?.[c] || '').toString().trim();
+            headerRow.push(`${h6} ${h7}`.trim());
+          }
+           
+          const tempEval = findColumnIndex(headerRow, KEYWORDS.EVALUATION);
+          const tempPrac = findColumnIndex(headerRow, KEYWORDS.PRACTICAL);
+          const tempQuiz = findColumnIndex(headerRow, KEYWORDS.QUIZ);
+          const tempExam = findColumnIndex(headerRow, KEYWORDS.EXAM);
+          
+          // Only apply dynamic indexing if we actually found at least two of the key columns
+          // This preserves the default 4,5,6,7 format if headers are completely unreadable
+          const foundCols = [tempEval, tempPrac, tempQuiz, tempExam].filter(idx => idx !== -1).length;
+          
+          if (foundCols >= 2) {
+            evalIdx = tempEval;
+            pracIdx = tempPrac;
+            quizIdx = tempQuiz;
+            examIdx = tempExam;
+            
+            // Re-adjust if quiz equals prac finding
+            if (pracIdx === quizIdx && pracIdx !== -1) {
+              pracIdx = headerRow.findIndex(h => h.includes('أعمال تطبيقية') || h.includes('تعبير شفوي'));
+              quizIdx = headerRow.findIndex(h => h.includes('معدل الفروض') || h.includes('الفرض') || h.includes('فردي'));
+            }
+          }
+
           const studentRows = rawData.slice(8);
           studentRows.forEach(row => {
             if (!row || row.length < 3) return; // Skip empty rows
@@ -101,10 +136,10 @@ export const excelService = {
             
             const dob = row[3]?.toString();
             
-            const ev = parseNumericValue(row[4]);
-            const pr = parseNumericValue(row[5]);
-            const qz = parseNumericValue(row[6]);
-            const ex = parseNumericValue(row[7]);
+            const ev = evalIdx !== -1 ? parseNumericValue(row[evalIdx]) : undefined;
+            const pr = pracIdx !== -1 ? parseNumericValue(row[pracIdx]) : undefined;
+            const qz = quizIdx !== -1 ? parseNumericValue(row[quizIdx]) : undefined;
+            const ex = examIdx !== -1 ? parseNumericValue(row[examIdx]) : undefined;
             
             let total = 0;
             let divisor = 0;
